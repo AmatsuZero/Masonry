@@ -8,21 +8,25 @@
 
 #import "MASUtilities.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  *  An immutable tuple which stores the view and the related NSLayoutAttribute.
  *  Describes part of either the left or right hand side of a constraint equation
  */
+NS_SWIFT_SENDABLE
+NS_SWIFT_NAME(ViewAttribute)
 @interface MASViewAttribute : NSObject
 
 /**
  *  The view which the reciever relates to. Can be nil if item is not a view.
  */
-@property (nonatomic, weak, readonly) MAS_VIEW *view;
+@property (nonatomic, weak, readonly, nullable) MAS_VIEW *view;
 
 /**
  *  The item which the reciever relates to.
  */
-@property (nonatomic, weak, readonly) id item;
+@property (nonatomic, weak, readonly, nullable) id item;
 
 /**
  *  The attribute which the reciever relates to
@@ -32,12 +36,12 @@
 /**
  *  Convenience initializer.
  */
-- (instancetype)initWithView:(MAS_VIEW *)view layoutAttribute:(NSLayoutAttribute)layoutAttribute;
+- (instancetype)initWithView:(MAS_VIEW *)view layoutAttribute:(NSLayoutAttribute)layoutAttribute NS_SWIFT_NAME(init(view:layoutAttribute:));
 
 /**
  *  The designated initializer.
  */
-- (instancetype)initWithView:(MAS_VIEW *)view item:(id)item layoutAttribute:(NSLayoutAttribute)layoutAttribute;
+- (instancetype)initWithView:(MAS_VIEW *)view item:(id)item layoutAttribute:(NSLayoutAttribute)layoutAttribute NS_DESIGNATED_INITIALIZER NS_SWIFT_NAME(init(view:item:layoutAttribute:));
 
 /**
  *	Determine whether the layoutAttribute is a size attribute
@@ -47,3 +51,5 @@
 - (BOOL)isSizeAttribute;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -9,9 +9,13 @@
 #import "MASConstraint.h"
 #import "MASUtilities.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  *	A group of MASConstraint objects
  */
+NS_SWIFT_UI_ACTOR
+NS_SWIFT_NAME(CompositeConstraint)
 @interface MASCompositeConstraint : MASConstraint
 
 /**
@@ -21,6 +25,10 @@
  *
  *	@return	a composite constraint
  */
-- (instancetype)initWithChildren:(NSArray<__kindof MASConstraint *> *)children;
+- (instancetype)initWithChildren:(NSArray<__kindof MASConstraint *> *)children NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)init NS_UNAVAILABLE;
 
 @end
+
+NS_ASSUME_NONNULL_END

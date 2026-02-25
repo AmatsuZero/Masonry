@@ -8,7 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
+// Swift 并发兼容性宏定义
+#if !defined(MAS_SWIFT_SENDABLE)
+    #if defined(__has_attribute) && __has_attribute(swift_attr)
+        #define MAS_SWIFT_SENDABLE __attribute__((swift_attr("@Sendable")))
+    #else
+        #define MAS_SWIFT_SENDABLE
+    #endif
+#endif
 
+#if !defined(MAS_SWIFT_UI_ACTOR)
+    #if defined(__has_attribute) && __has_attribute(swift_attr)
+        #define MAS_SWIFT_UI_ACTOR __attribute__((swift_attr("@MainActor")))
+    #else
+        #define MAS_SWIFT_UI_ACTOR
+    #endif
+#endif
 
 #if TARGET_OS_IPHONE || TARGET_OS_TV
 
@@ -17,7 +32,7 @@
     #define MAS_VIEW_CONTROLLER UIViewController
     #define MASEdgeInsets UIEdgeInsets
 
-    typedef UILayoutPriority MASLayoutPriority;
+    typedef UILayoutPriority MASLayoutPriority NS_SWIFT_BRIDGED_TYPEDEF;
     static const MASLayoutPriority MASLayoutPriorityRequired = UILayoutPriorityRequired;
     static const MASLayoutPriority MASLayoutPriorityDefaultHigh = UILayoutPriorityDefaultHigh;
     static const MASLayoutPriority MASLayoutPriorityDefaultMedium = 500;
@@ -30,7 +45,7 @@
     #define MAS_VIEW NSView
     #define MASEdgeInsets NSEdgeInsets
 
-    typedef NSLayoutPriority MASLayoutPriority;
+    typedef NSLayoutPriority MASLayoutPriority NS_SWIFT_BRIDGED_TYPEDEF;
     static const MASLayoutPriority MASLayoutPriorityRequired = NSLayoutPriorityRequired;
     static const MASLayoutPriority MASLayoutPriorityDefaultHigh = NSLayoutPriorityDefaultHigh;
     static const MASLayoutPriority MASLayoutPriorityDragThatCanResizeWindow = NSLayoutPriorityDragThatCanResizeWindow;
@@ -73,7 +88,7 @@
  *  Given a scalar or struct value, wraps it in NSValue
  *  Based on EXPObjectify: https://github.com/specta/expecta
  */
-static inline id _MASBoxValue(const char *type, ...) {
+static inline id _Nullable _MASBoxValue(const char *type, ...) {
     va_list v;
     va_start(v, type);
     id obj = nil;

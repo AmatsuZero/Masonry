@@ -16,23 +16,23 @@
  */
 @interface NSArray (MASShorthandAdditions)
 
-- (NSArray<__kindof MASConstraint *> *)makeConstraints:(void(^)(MASConstraintMaker *make))block;
-- (NSArray<__kindof MASConstraint *> *)updateConstraints:(void(^)(MASConstraintMaker *make))block;
-- (NSArray<__kindof MASConstraint *> *)remakeConstraints:(void(^)(MASConstraintMaker *make))block;
+- (NSArray<__kindof MASConstraint *> *)makeConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *make))block;
+- (NSArray<__kindof MASConstraint *> *)updateConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *make))block;
+- (NSArray<__kindof MASConstraint *> *)remakeConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *make))block;
 
 @end
 
 @implementation NSArray (MASShorthandAdditions)
 
-- (NSArray *)makeConstraints:(void(^)(MASConstraintMaker *))block {
+- (NSArray<__kindof MASConstraint *> *)makeConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *))block {
     return [self mas_makeConstraints:block];
 }
 
-- (NSArray *)updateConstraints:(void(^)(MASConstraintMaker *))block {
+- (NSArray<__kindof MASConstraint *> *)updateConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *))block {
     return [self mas_updateConstraints:block];
 }
 
-- (NSArray *)remakeConstraints:(void(^)(MASConstraintMaker *))block {
+- (NSArray<__kindof MASConstraint *> *)remakeConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *))block {
     return [self mas_remakeConstraints:block];
 }
 

@@ -8,15 +8,20 @@
 
 #import "MASUtilities.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  *	When you are debugging or printing the constraints attached to a view this subclass
  *  makes it easier to identify which constraints have been created via Masonry
  */
+NS_SWIFT_NAME(LayoutConstraint)
 @interface MASLayoutConstraint : NSLayoutConstraint
 
 /**
  *	a key to associate with this constraint
  */
-@property (nonatomic, strong) id mas_key;
+@property (nonatomic, strong, nullable) id mas_key;
 
 @end
+
+NS_ASSUME_NONNULL_END

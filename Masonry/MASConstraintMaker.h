@@ -9,6 +9,8 @@
 #import "MASConstraint.h"
 #import "MASUtilities.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 typedef NS_OPTIONS(NSInteger, MASAttribute) {
     MASAttributeLeft = 1 << NSLayoutAttributeLeft,
     MASAttributeRight = 1 << NSLayoutAttributeRight,
@@ -38,13 +40,14 @@ typedef NS_OPTIONS(NSInteger, MASAttribute) {
 
 #endif
     
-};
+} NS_SWIFT_NAME(ConstraintAttribute);
 
 /**
  *  Provides factory methods for creating MASConstraints.
  *  Constraints are collected until they are ready to be installed
  *
  */
+NS_SWIFT_UI_ACTOR
 @interface MASConstraintMaker : NSObject
 
 /**
@@ -136,3 +139,5 @@ typedef NS_OPTIONS(NSInteger, MASAttribute) {
 - (MASConstraint * (^)(dispatch_block_t))group;
 
 @end
+
+NS_ASSUME_NONNULL_END

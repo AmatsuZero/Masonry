@@ -10,6 +10,7 @@
 
 @protocol MASConstraintDelegate;
 
+NS_ASSUME_NONNULL_BEGIN
 
 @interface MASConstraint ()
 
@@ -21,7 +22,7 @@
 /**
  *	Usually MASConstraintMaker but could be a parent MASConstraint
  */
-@property (nonatomic, weak) id<MASConstraintDelegate> delegate;
+@property (nonatomic, weak, nullable) id<MASConstraintDelegate> delegate;
 
 /**
  *  Based on a provided value type, is equal to calling:
@@ -53,6 +54,7 @@
 @end
 
 
+NS_SWIFT_NAME(ConstraintDelegate)
 @protocol MASConstraintDelegate <NSObject>
 
 /**
@@ -64,3 +66,5 @@
 - (MASConstraint *)constraint:(MASConstraint *)constraint addConstraintWithLayoutAttribute:(NSLayoutAttribute)layoutAttribute;
 
 @end
+
+NS_ASSUME_NONNULL_END

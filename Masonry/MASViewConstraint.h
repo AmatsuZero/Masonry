@@ -11,10 +11,13 @@
 #import "MASLayoutConstraint.h"
 #import "MASUtilities.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  *  A single constraint.
  *  Contains the attributes neccessary for creating a NSLayoutConstraint and adding it to the appropriate view
  */
+NS_SWIFT_UI_ACTOR
 @interface MASViewConstraint : MASConstraint <NSCopying>
 
 /**
@@ -25,7 +28,7 @@
 /**
  *	Second item/view and second attribute of the NSLayoutConstraint
  */
-@property (nonatomic, strong, readonly) MASViewAttribute *secondViewAttribute;
+@property (nonatomic, strong, readonly, nullable) MASViewAttribute *secondViewAttribute;
 
 /**
  *	initialises the MASViewConstraint with the first part of the equation
@@ -46,3 +49,5 @@
 + (NSArray<__kindof MASConstraint *> *)installedConstraintsForView:(MAS_VIEW *)view;
 
 @end
+
+NS_ASSUME_NONNULL_END

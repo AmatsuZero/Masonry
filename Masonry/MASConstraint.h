@@ -8,11 +8,14 @@
 
 #import "MASUtilities.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  *	Enables Constraints to be created with chainable syntax
  *  Constraint can represent single NSLayoutConstraint (MASViewConstraint) 
  *  or a group of NSLayoutConstraints (MASComposisteConstraint)
  */
+MAS_SWIFT_UI_ACTOR
 @interface MASConstraint : NSObject
 
 // Chaining Support
@@ -224,6 +227,8 @@
 - (void)uninstall;
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 
 /**

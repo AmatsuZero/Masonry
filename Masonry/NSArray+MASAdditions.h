@@ -13,9 +13,11 @@
 typedef NS_ENUM(NSUInteger, MASAxisType) {
     MASAxisTypeHorizontal,
     MASAxisTypeVertical
-};
+} NS_SWIFT_NAME(AxisType);
 
-@interface NSArray<MAS_VIEW> (MASAdditions)
+NS_ASSUME_NONNULL_BEGIN
+
+@interface NSArray (MASAdditions)
 
 /**
  *  Creates a MASConstraintMaker with each view in the callee.
@@ -47,7 +49,7 @@ typedef NS_ENUM(NSUInteger, MASAxisType) {
  *
  *  @return Array of created/updated MASConstraints
  */
-- (NSArray *)mas_remakeConstraints:(void (NS_NOESCAPE ^)(MASConstraintMaker *make))block;
+- (NSArray<__kindof MASConstraint *> *)mas_remakeConstraints:(void (NS_NOESCAPE ^)(MASConstraintMaker *make))block;
 
 /**
  *  distribute with fixed spacing
@@ -70,3 +72,5 @@ typedef NS_ENUM(NSUInteger, MASAxisType) {
 - (void)mas_distributeViewsAlongAxis:(MASAxisType)axisType withFixedItemLength:(CGFloat)fixedItemLength leadSpacing:(CGFloat)leadSpacing tailSpacing:(CGFloat)tailSpacing;
 
 @end
+
+NS_ASSUME_NONNULL_END

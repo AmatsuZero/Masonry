@@ -10,6 +10,8 @@
 
 #ifdef MAS_SHORTHAND
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  *	Shorthand view additions without the 'mas_' prefixes,
  *  only enabled if MAS_SHORTHAND is defined
@@ -60,11 +62,13 @@
 
 #endif
 
-- (NSArray *)makeConstraints:(void(^)(MASConstraintMaker *make))block;
-- (NSArray *)updateConstraints:(void(^)(MASConstraintMaker *make))block;
-- (NSArray *)remakeConstraints:(void(^)(MASConstraintMaker *make))block;
+- (NSArray<__kindof MASConstraint *> *)makeConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *make))block;
+- (NSArray<__kindof MASConstraint *> *)updateConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *make))block;
+- (NSArray<__kindof MASConstraint *> *)remakeConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *make))block;
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 #define MAS_ATTR_FORWARD(attr)  \
 - (MASViewAttribute *)attr {    \
@@ -121,15 +125,15 @@ MAS_ATTR_FORWARD_AVAILABLE(safeAreaLayoutGuideCenterY, NS_AVAILABLE_IOS(11.0));
     return [self mas_attribute];
 }
 
-- (NSArray *)makeConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *))block {
+- (NSArray<__kindof MASConstraint *> *)makeConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *))block {
     return [self mas_makeConstraints:block];
 }
 
-- (NSArray *)updateConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *))block {
+- (NSArray<__kindof MASConstraint *> *)updateConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *))block {
     return [self mas_updateConstraints:block];
 }
 
-- (NSArray *)remakeConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *))block {
+- (NSArray<__kindof MASConstraint *> *)remakeConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *))block {
     return [self mas_remakeConstraints:block];
 }
 
