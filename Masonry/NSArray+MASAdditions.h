@@ -15,7 +15,7 @@ typedef NS_ENUM(NSUInteger, MASAxisType) {
     MASAxisTypeVertical
 };
 
-@interface NSArray (MASAdditions)
+@interface NSArray<MAS_VIEW> (MASAdditions)
 
 /**
  *  Creates a MASConstraintMaker with each view in the callee.
@@ -25,7 +25,7 @@ typedef NS_ENUM(NSUInteger, MASAxisType) {
  *
  *  @return Array of created MASConstraints
  */
-- (NSArray *)mas_makeConstraints:(void (NS_NOESCAPE ^)(MASConstraintMaker *make))block;
+- (NSArray<__kindof MASConstraint *> *)mas_makeConstraints:(void (NS_NOESCAPE ^)(MASConstraintMaker *make))block;
 
 /**
  *  Creates a MASConstraintMaker with each view in the callee.
@@ -36,7 +36,7 @@ typedef NS_ENUM(NSUInteger, MASAxisType) {
  *
  *  @return Array of created/updated MASConstraints
  */
-- (NSArray *)mas_updateConstraints:(void (NS_NOESCAPE ^)(MASConstraintMaker *make))block;
+- (NSArray<__kindof MASConstraint *> *)mas_updateConstraints:(void (NS_NOESCAPE ^)(MASConstraintMaker *make))block;
 
 /**
  *  Creates a MASConstraintMaker with each view in the callee.

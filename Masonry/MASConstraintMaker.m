@@ -16,18 +16,18 @@
 @interface MASConstraintMaker () <MASConstraintDelegate>
 
 @property (nonatomic, weak) MAS_VIEW *view;
-@property (nonatomic, strong) NSMutableArray *constraints;
+@property (nonatomic, strong) NSMutableArray<__kindof MASConstraint *> *constraints;
 
 @end
 
 @implementation MASConstraintMaker
 
-- (id)initWithView:(MAS_VIEW *)view {
+- (instancetype)initWithView:(MAS_VIEW *)view {
     self = [super init];
     if (!self) return nil;
     
     self.view = view;
-    self.constraints = NSMutableArray.new;
+    self.constraints = [NSMutableArray array];
     
     return self;
 }

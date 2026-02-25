@@ -16,9 +16,9 @@
  */
 @interface NSArray (MASShorthandAdditions)
 
-- (NSArray *)makeConstraints:(void(^)(MASConstraintMaker *make))block;
-- (NSArray *)updateConstraints:(void(^)(MASConstraintMaker *make))block;
-- (NSArray *)remakeConstraints:(void(^)(MASConstraintMaker *make))block;
+- (NSArray<__kindof MASConstraint *> *)makeConstraints:(void(^)(MASConstraintMaker *make))block;
+- (NSArray<__kindof MASConstraint *> *)updateConstraints:(void(^)(MASConstraintMaker *make))block;
+- (NSArray<__kindof MASConstraint *> *)remakeConstraints:(void(^)(MASConstraintMaker *make))block;
 
 @end
 

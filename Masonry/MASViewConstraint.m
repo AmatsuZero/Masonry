@@ -15,7 +15,7 @@
 
 @interface MAS_VIEW (MASConstraints)
 
-@property (nonatomic, readonly) NSMutableSet *mas_installedConstraints;
+@property (nonatomic, readonly) NSMutableSet<__kindof MASConstraint *> *mas_installedConstraints;
 
 @end
 
@@ -23,7 +23,7 @@
 
 static char kInstalledConstraintsKey;
 
-- (NSMutableSet *)mas_installedConstraints {
+- (NSMutableSet<__kindof MASConstraint *> *)mas_installedConstraints {
     NSMutableSet *constraints = objc_getAssociatedObject(self, &kInstalledConstraintsKey);
     if (!constraints) {
         constraints = [NSMutableSet set];
@@ -52,7 +52,7 @@ static char kInstalledConstraintsKey;
 
 @implementation MASViewConstraint
 
-- (id)initWithFirstViewAttribute:(MASViewAttribute *)firstViewAttribute {
+- (instancetype)initWithFirstViewAttribute:(MASViewAttribute *)firstViewAttribute {
     self = [super init];
     if (!self) return nil;
     
@@ -65,7 +65,7 @@ static char kInstalledConstraintsKey;
 
 #pragma mark - NSCoping
 
-- (id)copyWithZone:(NSZone __unused *)zone {
+- (instancetype)copyWithZone:(NSZone __unused *)zone {
     MASViewConstraint *constraint = [[MASViewConstraint alloc] initWithFirstViewAttribute:self.firstViewAttribute];
     constraint.layoutConstant = self.layoutConstant;
     constraint.layoutRelation = self.layoutRelation;
