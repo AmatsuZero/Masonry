@@ -228,9 +228,6 @@ MAS_SWIFT_UI_ACTOR
 
 @end
 
-NS_ASSUME_NONNULL_END
-
-
 /**
  *  Convenience auto-boxing macros for MASConstraint methods.
  *
@@ -271,3 +268,5 @@ NS_ASSUME_NONNULL_END
 - (MASConstraint * (^)(id offset))mas_offset;
 
 @end
+
+NS_ASSUME_NONNULL_END
