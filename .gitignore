@@ -15,5 +15,5 @@ profile
 .DS_Store
 script/env.sh
 DerivedData/
-
+.build/
 /Masonry.xcworkspace/xcshareddata/Masonry.xccheckout

@@ -11,6 +11,10 @@ import UIKit
 import AppKit
 #endif
 
+// SPM 中 MasonrySwift 作为独立 target 依赖 Masonry ObjC target，需要显式导入模块
+// CocoaPods 混编场景下此 import 也不会产生问题
+import Masonry
+
 // MARK: - 类型别名
 
 #if canImport(UIKit)
@@ -429,15 +433,27 @@ public final class MASSwiftConstraintProxy {
         case let obj as NSObject:
             return obj
         case let point as CGPoint:
+            #if canImport(UIKit)
             return NSValue(cgPoint: point)
+            #else
+            return NSValue(point: point)
+            #endif
         case let size as CGSize:
+            #if canImport(UIKit)
             return NSValue(cgSize: size)
+            #else
+            return NSValue(size: size)
+            #endif
         #if canImport(UIKit)
         case let insets as UIEdgeInsets:
             return NSValue(uiEdgeInsets: insets)
         #endif
         case let rect as CGRect:
+            #if canImport(UIKit)
             return NSValue(cgRect: rect)
+            #else
+            return NSValue(rect: rect)
+            #endif
         case let floatVal as CGFloat:
             return NSNumber(value: Double(floatVal))
         case let doubleVal as Double:

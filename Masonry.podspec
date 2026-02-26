@@ -45,4 +45,15 @@ Pod::Spec.new do |s|
     sw.dependency 'Masonry/Core'
     sw.source_files    = 'Masonry/*.swift'
   end
+
+  # ── Tests: 单元测试 ──
+  s.test_spec 'Tests' do |ts|
+    ts.requires_app_host = true
+    ts.test_type = :ui
+    ts.ios.deployment_target = '13.0'
+    ts.source_files = 'Tests/*.{h,m}', 'Tests/Specs/*.{h,m}'
+    ts.prefix_header_file = 'Tests/MasonryTests-Prefix.pch'
+    ts.frameworks = 'XCTest'
+    ts.dependency 'Expecta'
+  end
 end
