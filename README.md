@@ -507,6 +507,23 @@ Copy the included code snippets to ``~/Library/Developer/Xcode/UserData/CodeSnip
 * Native Swift DSL with operator overloading (`==`, `>=`, `<=`, `+`, `-`, `*`, `/`, `~`).
 * Swift Package Manager support.
 
+## Claude Code AI Skill
+
+Masonry 提供了一个 [Claude Code](https://claude.ai/code) Skill，可以帮助你：
+
+- **生成约束代码**：根据布局需求快速生成 ObjC 或 Swift 的 Masonry 约束代码
+- **解释约束含义**：将 `mas_makeConstraints` 块翻译成自然语言
+- **调试约束冲突**：分析 Xcode 控制台的 "Unable to simultaneously satisfy constraints" 错误
+- **最佳实践建议**：在 makeConstraints / updateConstraints / remakeConstraints / 优先级 / Safe Area 等场景提供正确用法
+
+#### 安装方式
+
+```bash
+npx skills add AmatsuZero/Masonry
+```
+
+安装后，在 Claude Code 中提问 Masonry 相关问题时，Skill 会自动激活并提供精准的代码生成和调试支持。
+
 ## TODO
 * Eye candy
 * Mac example project
