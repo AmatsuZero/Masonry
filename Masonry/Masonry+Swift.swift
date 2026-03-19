@@ -1037,6 +1037,56 @@ public func - (lhs: ViewAttribute, rhs: Double) -> MASAttributeOffset {
     return MASAttributeOffset(attribute: lhs, offset: CGFloat(-rhs))
 }
 
+/// 加法运算符：在已有 MASAttributeOffset 基础上累加偏移量（CGFloat）
+///
+/// ```swift
+/// make.left == label.mas.right + spacing + 8
+/// ```
+@MainActor
+@discardableResult
+public func + (lhs: MASAttributeOffset, rhs: CGFloat) -> MASAttributeOffset {
+    return MASAttributeOffset(attribute: lhs.attribute, offset: lhs.offset + rhs)
+}
+
+/// 加法运算符：在已有 MASAttributeOffset 基础上累加偏移量（Int）
+@MainActor
+@discardableResult
+public func + (lhs: MASAttributeOffset, rhs: Int) -> MASAttributeOffset {
+    return MASAttributeOffset(attribute: lhs.attribute, offset: lhs.offset + CGFloat(rhs))
+}
+
+/// 加法运算符：在已有 MASAttributeOffset 基础上累加偏移量（Double）
+@MainActor
+@discardableResult
+public func + (lhs: MASAttributeOffset, rhs: Double) -> MASAttributeOffset {
+    return MASAttributeOffset(attribute: lhs.attribute, offset: lhs.offset + CGFloat(rhs))
+}
+
+/// 减法运算符：在已有 MASAttributeOffset 基础上减去偏移量（CGFloat）
+///
+/// ```swift
+/// make.bottom <= view.mas.bottom - panelHeight - 8
+/// ```
+@MainActor
+@discardableResult
+public func - (lhs: MASAttributeOffset, rhs: CGFloat) -> MASAttributeOffset {
+    return MASAttributeOffset(attribute: lhs.attribute, offset: lhs.offset - rhs)
+}
+
+/// 减法运算符：在已有 MASAttributeOffset 基础上减去偏移量（Int）
+@MainActor
+@discardableResult
+public func - (lhs: MASAttributeOffset, rhs: Int) -> MASAttributeOffset {
+    return MASAttributeOffset(attribute: lhs.attribute, offset: lhs.offset - CGFloat(rhs))
+}
+
+/// 减法运算符：在已有 MASAttributeOffset 基础上减去偏移量（Double）
+@MainActor
+@discardableResult
+public func - (lhs: MASAttributeOffset, rhs: Double) -> MASAttributeOffset {
+    return MASAttributeOffset(attribute: lhs.attribute, offset: lhs.offset - CGFloat(rhs))
+}
+
 // MARK: - MASConstraint 运算符重载
 
 /// 等于运算符：设置约束等于给定值

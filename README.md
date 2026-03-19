@@ -1,9 +1,9 @@
 # Masonry [![Build Status](https://travis-ci.org/SnapKit/Masonry.svg?branch=master)](https://travis-ci.org/SnapKit/Masonry) [![Coverage Status](https://img.shields.io/coveralls/SnapKit/Masonry.svg?style=flat-square)](https://coveralls.io/r/SnapKit/Masonry) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) ![Pod Version](https://img.shields.io/cocoapods/v/Masonry.svg?style=flat)
 
-**Masonry is still actively maintained, we are committed to fixing bugs and merging good quality PRs from the wider community. However if you're using Swift in your project, we recommend using [SnapKit](https://github.com/SnapKit/SnapKit) as it provides better type safety with a simpler API.**
-
 Masonry is a light-weight layout framework which wraps AutoLayout with a nicer syntax. Masonry has its own layout DSL which provides a chainable way of describing your NSLayoutConstraints which results in layout code that is more concise and readable.
-Masonry supports iOS and Mac OS X.
+Masonry supports iOS, Mac OS X and tvOS.
+
+**Swift users:** Masonry now ships a native Swift DSL via the `MasonrySwift` module. See the [Swift Support](#swift-support) section below.
 
 For examples take a look at the **Masonry iOS Examples** project in the Masonry workspace. You will need to run `pod install` after downloading.
 
@@ -373,7 +373,104 @@ For an example of how to set this up take a look at the **Masonry iOS Examples**
 @end
 ```
 
+## Swift Support
+
+Masonry includes a native Swift DSL via the `MasonrySwift` module, solving the problem that ObjC macros (`mas_equalTo`, `mas_offset`, etc.) are unavailable in Swift.
+
+#### Basic Usage
+
+Access constraints through the `.mas` namespace on any view:
+
+```swift
+view.mas.makeConstraints { make in
+    make.top == superview.mas.top + 20
+    make.left.right.equalTo(superview).insets(.init(top: 0, left: 16, bottom: 0, right: 16))
+    make.height.equalTo(44)
+}
+```
+
+#### Operator Syntax
+
+The Swift DSL supports natural operator expressions:
+
+```swift
+view.mas.makeConstraints { make in
+    // Equality
+    make.width == 100
+    make.height >= 44
+    make.top <= superview.mas.top + 20
+
+    // View attributes with offset arithmetic
+    make.left == label.mas.right + spacing + 8
+    make.bottom <= panel.mas.bottom - panelHeight - 8
+
+    // Multiplier / divisor
+    make.width == superview.mas.width * 0.5
+    make.height == superview.mas.height / 3
+}
+```
+
+#### Priority
+
+Use the `~` operator to set constraint priority:
+
+```swift
+view.mas.makeConstraints { make in
+    make.width == 200 ~ .defaultHigh
+    make.height == 44 ~ 750
+}
+```
+
+#### Updating and Remaking
+
+```swift
+// Update only the constant value of existing constraints
+view.mas.updateConstraints { make in
+    make.height.equalTo(newHeight)
+}
+
+// Remove all constraints and rebuild
+view.mas.remakeConstraints { make in
+    make.edges.equalTo(superview).insets(newInsets)
+}
+```
+
+#### Composite Constraints
+
+```swift
+view.mas.makeConstraints { make in
+    // edges, size, center work the same as in ObjC
+    make.edges.equalTo(superview).insets(.init(top: 10, left: 10, bottom: 10, right: 10))
+    make.size.equalTo(CGSize(width: 100, height: 50))
+    make.center.equalTo(superview)
+}
+```
+
+#### Safe Area
+
+```swift
+view.mas.makeConstraints { make in
+    make.top == superview.mas.safeAreaTop
+    make.bottom == superview.mas.safeAreaBottom
+}
+```
+
 ## Installation
+
+#### Swift Package Manager
+
+Add the following to your `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/AmatsuZero/Masonry.git", from: "1.2.0")
+]
+```
+
+Then add `MasonrySwift` (Swift DSL) or `Masonry` (ObjC only) to your target's dependencies.
+
+#### CocoaPods
+
 Use the [orsome](http://www.youtube.com/watch?v=YaIZF8uUTtk) [CocoaPods](http://github.com/CocoaPods/CocoaPods).
 
 In your Podfile
@@ -407,6 +504,8 @@ Copy the included code snippets to ``~/Library/Developer/Xcode/UserData/CodeSnip
 * Constraints read like sentences.
 * No crazy macro magic. Masonry won't pollute the global namespace with macros.
 * Not string or dictionary based and hence you get compile time checking.
+* Native Swift DSL with operator overloading (`==`, `>=`, `<=`, `+`, `-`, `*`, `/`, `~`).
+* Swift Package Manager support.
 
 ## TODO
 * Eye candy
