@@ -74,6 +74,42 @@
     return newConstraint;
 }
 
+#pragma mark - standard Attributes
+
+- (MASConstraint *)addConstraintWithLayoutAttribute:(NSLayoutAttribute)layoutAttribute {
+    return [self constraint:nil addConstraintWithLayoutAttribute:layoutAttribute];
+}
+
+#pragma mark - attribute mapping helper
+
+- (NSDictionary<NSNumber *, MASConstraint * (^)(void)> *)attributeMapping {
+    return @{
+        @(MASAttributeLeft): ^{ return self.view.mas_left; },
+        @(MASAttributeRight): ^{ return self.view.mas_right; },
+        @(MASAttributeTop): ^{ return self.view.mas_top; },
+        @(MASAttributeBottom): ^{ return self.view.mas_bottom; },
+        @(MASAttributeLeading): ^{ return self.view.mas_leading; },
+        @(MASAttributeTrailing): ^{ return self.view.mas_trailing; },
+        @(MASAttributeWidth): ^{ return self.view.mas_width; },
+        @(MASAttributeHeight): ^{ return self.view.mas_height; },
+        @(MASAttributeCenterX): ^{ return self.view.mas_centerX; },
+        @(MASAttributeCenterY): ^{ return self.view.mas_centerY; },
+        @(MASAttributeBaseline): ^{ return self.view.mas_baseline; },
+        @(MASAttributeFirstBaseline): ^{ return self.view.mas_firstBaseline; },
+        @(MASAttributeLastBaseline): ^{ return self.view.mas_lastBaseline; },
+#if TARGET_OS_IPHONE || TARGET_OS_TV
+        @(MASAttributeLeftMargin): ^{ return self.view.mas_leftMargin; },
+        @(MASAttributeRightMargin): ^{ return self.view.mas_rightMargin; },
+        @(MASAttributeTopMargin): ^{ return self.view.mas_topMargin; },
+        @(MASAttributeBottomMargin): ^{ return self.view.mas_bottomMargin; },
+        @(MASAttributeLeadingMargin): ^{ return self.view.mas_leadingMargin; },
+        @(MASAttributeTrailingMargin): ^{ return self.view.mas_trailingMargin; },
+        @(MASAttributeCenterXWithinMargins): ^{ return self.view.mas_centerXWithinMargins; },
+        @(MASAttributeCenterYWithinMargins): ^{ return self.view.mas_centerYWithinMargins; },
+#endif
+    };
+}
+
 - (MASConstraint *)addConstraintWithAttributes:(MASAttribute)attrs {
     __unused MASAttribute anyAttribute = (MASAttributeLeft | MASAttributeRight | MASAttributeTop | MASAttributeBottom | MASAttributeLeading
                                           | MASAttributeTrailing | MASAttributeWidth | MASAttributeHeight | MASAttributeCenterX
@@ -89,33 +125,16 @@
     NSAssert((attrs & anyAttribute) != 0, @"You didn't pass any attribute to make.attributes(...)");
     
     NSMutableArray *attributes = [NSMutableArray array];
+    NSDictionary<NSNumber *, MASConstraint * (^)(void)> *mapping = [self attributeMapping];
     
-    if (attrs & MASAttributeLeft) [attributes addObject:self.view.mas_left];
-    if (attrs & MASAttributeRight) [attributes addObject:self.view.mas_right];
-    if (attrs & MASAttributeTop) [attributes addObject:self.view.mas_top];
-    if (attrs & MASAttributeBottom) [attributes addObject:self.view.mas_bottom];
-    if (attrs & MASAttributeLeading) [attributes addObject:self.view.mas_leading];
-    if (attrs & MASAttributeTrailing) [attributes addObject:self.view.mas_trailing];
-    if (attrs & MASAttributeWidth) [attributes addObject:self.view.mas_width];
-    if (attrs & MASAttributeHeight) [attributes addObject:self.view.mas_height];
-    if (attrs & MASAttributeCenterX) [attributes addObject:self.view.mas_centerX];
-    if (attrs & MASAttributeCenterY) [attributes addObject:self.view.mas_centerY];
-    if (attrs & MASAttributeBaseline) [attributes addObject:self.view.mas_baseline];
-    if (attrs & MASAttributeFirstBaseline) [attributes addObject:self.view.mas_firstBaseline];
-    if (attrs & MASAttributeLastBaseline) [attributes addObject:self.view.mas_lastBaseline];
-    
-#if TARGET_OS_IPHONE || TARGET_OS_TV
-    
-    if (attrs & MASAttributeLeftMargin) [attributes addObject:self.view.mas_leftMargin];
-    if (attrs & MASAttributeRightMargin) [attributes addObject:self.view.mas_rightMargin];
-    if (attrs & MASAttributeTopMargin) [attributes addObject:self.view.mas_topMargin];
-    if (attrs & MASAttributeBottomMargin) [attributes addObject:self.view.mas_bottomMargin];
-    if (attrs & MASAttributeLeadingMargin) [attributes addObject:self.view.mas_leadingMargin];
-    if (attrs & MASAttributeTrailingMargin) [attributes addObject:self.view.mas_trailingMargin];
-    if (attrs & MASAttributeCenterXWithinMargins) [attributes addObject:self.view.mas_centerXWithinMargins];
-    if (attrs & MASAttributeCenterYWithinMargins) [attributes addObject:self.view.mas_centerYWithinMargins];
-    
-#endif
+    // 使用循环处理所有属性，替代大量的if条件判断
+    for (NSNumber *attributeKey in mapping) {
+        MASAttribute attribute = [attributeKey integerValue];
+        if ((attrs & attribute) != 0) {
+            MASConstraint * (^attributeBlock)(void) = mapping[attributeKey];
+            [attributes addObject:attributeBlock()];
+        }
+    }
     
     NSMutableArray *children = [NSMutableArray arrayWithCapacity:attributes.count];
     
@@ -127,12 +146,6 @@
     constraint.delegate = self;
     [self.constraints addObject:constraint];
     return constraint;
-}
-
-#pragma mark - standard Attributes
-
-- (MASConstraint *)addConstraintWithLayoutAttribute:(NSLayoutAttribute)layoutAttribute {
-    return [self constraint:nil addConstraintWithLayoutAttribute:layoutAttribute];
 }
 
 - (MASConstraint *)left {
