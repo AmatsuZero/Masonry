@@ -28,12 +28,12 @@ let package = Package(
             name: "Masonry",
             path: "Masonry",
             exclude: [
-                "Masonry+Swift.swift",
                 "Info.plist"
             ],
-            publicHeadersPath: ".",
+            publicHeadersPath: "include",
             cSettings: [
-                .headerSearchPath(".")
+                .headerSearchPath("."),
+                .headerSearchPath("include"),
             ]
         ),
 
@@ -41,11 +41,33 @@ let package = Package(
         .target(
             name: "MasonrySwift",
             dependencies: ["Masonry"],
-            path: "Masonry",
+            path: "MasonrySwift"
+        ),
+
+        // ── Tests: 单元测试 ──
+        .testTarget(
+            name: "MasonryTests",
+            dependencies: ["Masonry"],
+            path: "Tests",
             exclude: [
-                "Info.plist"
+                "Masonry Tests.xcodeproj",
+                "MasonryTests-Info.plist",
+                "MasonryTestsLoader",
+                "GcovTestObserver.m",
             ],
-            sources: ["Masonry+Swift.swift"]
+            cSettings: [
+                .headerSearchPath("."),
+                .headerSearchPath("Specs"),
+                .headerSearchPath("../Masonry"),
+                .headerSearchPath("../Masonry/include"),
+            ]
+        ),
+
+        // ── Example: MasonrySwift 使用示例 ──
+        .target(
+            name: "MasonrySwiftExample",
+            dependencies: ["Masonry", "MasonrySwift"],
+            path: "Examples/SwiftExample"
         ),
     ],
     swiftLanguageVersions: [.v5]

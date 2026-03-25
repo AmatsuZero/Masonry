@@ -6,6 +6,10 @@
 //
 //
 
+#import "XCTest+Spec.h"
+#import "MASUtilities.h"
+#import "MASTestExpectation.h"
+
 #import "ViewController+MASAdditions.h"
 #import "View+MASAdditions.h"
 

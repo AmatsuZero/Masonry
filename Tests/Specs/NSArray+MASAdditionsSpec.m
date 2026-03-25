@@ -5,6 +5,10 @@
 //  Created by Daniel Hammond on 11/26/13.
 //
 
+#import "XCTest+Spec.h"
+#import "MASUtilities.h"
+#import "MASTestExpectation.h"
+
 #import "NSArray+MASAdditions.h"
 #import "MASViewConstraint.h"
 

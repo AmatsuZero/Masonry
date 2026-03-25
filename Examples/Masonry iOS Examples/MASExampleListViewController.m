@@ -70,6 +70,8 @@ static NSString * const kMASCellReuseIdentifier = @"kMASCellReuseIdentifier";
                                               viewClass:MASExampleMarginView.class],
         [[MASExampleViewController alloc] initWithTitle:@"Views Distribute"
                                               viewClass:MASExampleDistributeView.class],
+        [[MASExampleViewController alloc] initWithTitle:@"Swift Basic (MasonrySwift)"
+                                              viewClass:NSClassFromString(@"MASExampleSwiftBasicView")],
 
     ];
     

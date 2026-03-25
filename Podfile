@@ -1,6 +1,6 @@
 workspace 'Masonry'
 
-platform :ios, '8.0'
+platform :ios, '13.0'
 
 project 'Examples/Masonry iOS Examples'
 target 'Masonry iOS Examples' do
@@ -9,7 +9,6 @@ end
 
 target 'Masonry iOS Tests' do
   project 'Tests/Masonry Tests'
-  pod 'Expecta'
 end
 
 target 'MasonryTestsLoader' do

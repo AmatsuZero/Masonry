@@ -6,6 +6,10 @@
 //  Copyright (c) 2013 Jonas Budelmann. All rights reserved.
 //
 
+#import "XCTest+Spec.h"
+#import "MASUtilities.h"
+#import "MASTestExpectation.h"
+
 #import "View+MASAdditions.h"
 
 SpecBegin(View_MASAdditions)

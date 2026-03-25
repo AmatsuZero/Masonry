@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'Masonry'
-  s.version  = '1.2.2'
+  s.version  = '1.2.3'
   s.license  = 'MIT'
   s.summary  = 'Harness the power of Auto Layout NSLayoutConstraints with a simplified, chainable and expressive syntax.'
   s.homepage = 'https://github.com/AmatsuZero/Masonry'
@@ -36,14 +36,17 @@ Pod::Spec.new do |s|
 
   # ── Core: Objective-C 核心功能 ──
   s.subspec 'Core' do |core|
-    core.source_files = 'Masonry/*.{h,m}'
+    core.source_files = 'Masonry/*.{h,m}', 'Masonry/include/*.h'
+    core.public_header_files = 'Masonry/include/*.h'
+    core.private_header_files = 'Masonry/MASConstraint+Private.h'
+    core.header_dir = 'Masonry'
   end
 
   # ── Swift: Swift 原生语法扩展 ──
   # 用法：pod 'Masonry/Swift'
   s.subspec 'Swift' do |sw|
     sw.dependency 'Masonry/Core'
-    sw.source_files    = 'Masonry/*.swift'
+    sw.source_files = 'MasonrySwift/*.swift'
   end
 
   # ── Tests: 单元测试 ──
@@ -52,8 +55,6 @@ Pod::Spec.new do |s|
     ts.test_type = :ui
     ts.ios.deployment_target = '13.0'
     ts.source_files = 'Tests/*.{h,m}', 'Tests/Specs/*.{h,m}'
-    ts.prefix_header_file = 'Tests/MasonryTests-Prefix.pch'
     ts.frameworks = 'XCTest'
-    ts.dependency 'Expecta'
   end
 end
