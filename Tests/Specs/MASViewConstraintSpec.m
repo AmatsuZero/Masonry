@@ -560,7 +560,8 @@ SpecBegin(MASViewConstraint) {
 }
 
 - (void)testEqualToSuperviewSupportsChainingOffset {
-    MASConstraint *result = [[constraint equalToSuperview] offset:20];
+    MASConstraint *result = [constraint equalToSuperview];
+    [result setOffset:20];
     expect(result).to.beIdenticalTo(constraint);
     expect(constraint.layoutConstant).to.equal(20);
     expect(constraint.secondViewAttribute.view).to.beIdenticalTo(superview);

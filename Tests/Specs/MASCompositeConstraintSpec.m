@@ -27,6 +27,7 @@
 @property (nonatomic, assign) CGFloat layoutConstant;
 @property (nonatomic, assign) MASLayoutPriority layoutPriority;
 @property (nonatomic, assign) CGFloat layoutMultiplier;
+@property (nonatomic, assign) NSLayoutRelation layoutRelation;
 
 @end
 
@@ -269,7 +270,8 @@ SpecBegin(MASCompositeConstraint) {
     composite = [[MASCompositeConstraint alloc] initWithChildren:children];
     composite.delegate = delegate;
 
-    MASConstraint *result = [[composite equalToSuperview] insets:(MASEdgeInsets){10, 20, 10, 20}];
+    MASConstraint *result = [composite equalToSuperview];
+    [result setInsets:(MASEdgeInsets){10, 20, 10, 20}];
     expect(result).to.beIdenticalTo(composite);
 
     // top

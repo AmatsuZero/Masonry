@@ -187,20 +187,25 @@
 #pragma mark - heirachy
 
 - (instancetype)mas_closestCommonSuperview:(MAS_VIEW *)view {
-    MAS_VIEW *closestCommonSuperview = nil;
-
-    MAS_VIEW *secondViewSuperview = view;
-    while (!closestCommonSuperview && secondViewSuperview) {
-        MAS_VIEW *firstViewSuperview = self;
-        while (!closestCommonSuperview && firstViewSuperview) {
-            if (secondViewSuperview == firstViewSuperview) {
-                closestCommonSuperview = secondViewSuperview;
-            }
-            firstViewSuperview = firstViewSuperview.superview;
-        }
-        secondViewSuperview = secondViewSuperview.superview;
+    // Fast path O(1): siblings sharing a direct parent (most common in UI layout)
+    if (self.superview && self.superview == view.superview) {
+        return self.superview;
     }
-    return closestCommonSuperview;
+    // Fast path O(1): direct parent-child relationship
+    if (self.superview == view) return view;
+    if (view.superview == self) return self;
+
+    // General case: two-pointer O(n), inspired by linked-list intersection.
+    // Each pointer traverses its own chain then restarts at the other view's
+    // origin; they meet at the LCA after (depth_A + depth_B) steps.
+    // Both reach nil simultaneously when there is no common ancestor.
+    MAS_VIEW *a = self;
+    MAS_VIEW *b = view;
+    while (a != b) {
+        a = (a == nil) ? view : a.superview;
+        b = (b == nil) ? self : b.superview;
+    }
+    return a;
 }
 
 @end
