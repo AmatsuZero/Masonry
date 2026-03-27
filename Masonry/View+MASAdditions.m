@@ -187,6 +187,8 @@
 #pragma mark - heirachy
 
 - (instancetype)mas_closestCommonSuperview:(MAS_VIEW *)view {
+    // Degenerate case: same view (e.g. make.width.equalTo(view.mas_width))
+    if (self == view) return self;
     // Fast path O(1): siblings sharing a direct parent (most common in UI layout)
     if (self.superview && self.superview == view.superview) {
         return self.superview;
