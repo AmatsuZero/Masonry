@@ -224,6 +224,29 @@ make.left.right.and.bottom.equalTo(superview);
 make.top.equalTo(otherView);
 ```
 
+## equalToSuperview
+
+`equalToSuperview` is a convenience method which constrains an attribute directly to the **same attribute of the superview**, without needing an explicit reference to it.
+
+```obj-c
+[view mas_makeConstraints:^(MASConstraintMaker *make) {
+    // equivalent to make.top.equalTo(superview.mas_top)
+    make.top.equalToSuperview();
+
+    // equivalent to make.top.equalTo(superview.mas_top).offset(20)
+    make.top.equalToSuperview().offset(20);
+
+    // works with composite constraints too
+    make.edges.equalToSuperview();
+    make.edges.equalToSuperview().insets(UIEdgeInsetsMake(10, 10, 10, 10));
+
+    // mas_ prefix version (macro)
+    make.left.mas_equalToSuperview;
+}];
+```
+
+> **Note:** The view must already have a superview (be added to a view hierarchy) before `equalToSuperview` is called, otherwise an assertion is raised.
+
 ## Hold on for dear life
 
 Sometimes you need modify existing constraints in order to animate or remove/replace constraints.
@@ -446,6 +469,20 @@ view.mas.makeConstraints { make in
 }
 ```
 
+#### equalToSuperview
+
+```swift
+view.mas.makeConstraints { make in
+    // equivalent to make.top.equalTo(superview.mas.top)
+    make.top.equalToSuperview()
+
+    // chainable — add offset/insets after
+    make.top.equalToSuperview().offset(20)
+    make.edges.equalToSuperview()
+    make.edges.equalToSuperview().insets(.init(top: 10, left: 10, bottom: 10, right: 10))
+}
+```
+
 #### Safe Area
 
 ```swift
@@ -506,6 +543,7 @@ Copy the included code snippets to ``~/Library/Developer/Xcode/UserData/CodeSnip
 * Not string or dictionary based and hence you get compile time checking.
 * Native Swift DSL with operator overloading (`==`, `>=`, `<=`, `+`, `-`, `*`, `/`, `~`).
 * Swift Package Manager support.
+* `equalToSuperview()` convenience method — constrain to the superview's same attribute without an explicit reference.
 
 ## Claude Code AI Skill
 

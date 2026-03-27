@@ -207,16 +207,79 @@ SpecBegin(MASCompositeConstraint) {
     composite = [[MASCompositeConstraint alloc] initWithChildren:children];
     composite.delegate = delegate;
     expect(composite.childConstraints.count).to.equal(2);
-    
+
     MASConstraint *result = (id)composite.and.bottom;
     expect(result).to.beIdenticalTo(composite);
     expect(delegate.chainedConstraints).to.equal(@[composite]);
     expect(composite.childConstraints.count).to.equal(3);
-    
+
     MASViewConstraint *newChild = composite.childConstraints[2];
-    
+
     expect(newChild.firstViewAttribute.layoutAttribute).to.equal(@(NSLayoutAttributeBottom));
     expect(newChild.delegate).to.beIdenticalTo(composite);
+}
+
+- (void)testEqualToSuperviewSetsRelationOnAllChildren {
+    NSArray *children = @[
+        [[MASViewConstraint alloc] initWithFirstViewAttribute:view.mas_left],
+        [[MASViewConstraint alloc] initWithFirstViewAttribute:view.mas_right],
+        [[MASViewConstraint alloc] initWithFirstViewAttribute:view.mas_top],
+        [[MASViewConstraint alloc] initWithFirstViewAttribute:view.mas_bottom],
+    ];
+    composite = [[MASCompositeConstraint alloc] initWithChildren:children];
+    composite.delegate = delegate;
+
+    MASConstraint *result = [composite equalToSuperview];
+    expect(result).to.beIdenticalTo(composite);
+
+    for (MASViewConstraint *child in composite.childConstraints) {
+        expect(child.secondViewAttribute.view).to.beIdenticalTo(superview);
+        expect(child.secondViewAttribute.layoutAttribute).to.equal(child.firstViewAttribute.layoutAttribute);
+        expect(child.layoutRelation).to.equal(NSLayoutRelationEqual);
+    }
+}
+
+- (void)testEqualToSuperviewInstallsConstraintsOnAllChildren {
+    NSArray *children = @[
+        [[MASViewConstraint alloc] initWithFirstViewAttribute:view.mas_leading],
+        [[MASViewConstraint alloc] initWithFirstViewAttribute:view.mas_trailing],
+    ];
+    composite = [[MASCompositeConstraint alloc] initWithChildren:children];
+    composite.delegate = delegate;
+
+    [composite equalToSuperview];
+    [composite install];
+
+    expect(superview.constraints).to.haveCountOf(2);
+    for (NSLayoutConstraint *lc in superview.constraints) {
+        expect(lc.firstItem).to.beIdenticalTo(view);
+        expect(lc.secondItem).to.beIdenticalTo(superview);
+        expect(lc.relation).to.equal(NSLayoutRelationEqual);
+        expect(lc.constant).to.equal(0);
+    }
+}
+
+- (void)testEqualToSuperviewSupportsChainingInset {
+    NSArray *children = @[
+        [[MASViewConstraint alloc] initWithFirstViewAttribute:view.mas_top],
+        [[MASViewConstraint alloc] initWithFirstViewAttribute:view.mas_left],
+        [[MASViewConstraint alloc] initWithFirstViewAttribute:view.mas_bottom],
+        [[MASViewConstraint alloc] initWithFirstViewAttribute:view.mas_right],
+    ];
+    composite = [[MASCompositeConstraint alloc] initWithChildren:children];
+    composite.delegate = delegate;
+
+    MASConstraint *result = [[composite equalToSuperview] insets:(MASEdgeInsets){10, 20, 10, 20}];
+    expect(result).to.beIdenticalTo(composite);
+
+    // top
+    expect([(MASViewConstraint *)composite.childConstraints[0] layoutConstant]).to.equal(10);
+    // left
+    expect([(MASViewConstraint *)composite.childConstraints[1] layoutConstant]).to.equal(20);
+    // bottom
+    expect([(MASViewConstraint *)composite.childConstraints[2] layoutConstant]).to.equal(-10);
+    // right
+    expect([(MASViewConstraint *)composite.childConstraints[3] layoutConstant]).to.equal(-20);
 }
 
 SpecEnd

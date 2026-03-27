@@ -197,6 +197,14 @@ static char kInstalledConstraintsKey;
     };
 }
 
+- (MASConstraint *)equalToSuperview {
+    MAS_VIEW *superview = self.firstViewAttribute.view.superview;
+    NSAssert(superview,
+             @"Cannot use equalToSuperview on a view without a superview. "
+             @"Make sure the view is added to a view hierarchy before making constraints.");
+    return self.equalToWithRelation(superview, NSLayoutRelationEqual);
+}
+
 #pragma mark - Semantic properties
 
 - (MASConstraint *)with {

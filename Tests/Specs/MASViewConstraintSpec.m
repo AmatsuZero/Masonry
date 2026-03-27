@@ -536,4 +536,44 @@ SpecBegin(MASViewConstraint) {
     expect(delegate.chainedConstraints).to.equal(@[constraint]);
 }
 
+- (void)testEqualToSuperviewSetsRelationAndMatchesSuperview {
+    // constraint 的 firstViewAttribute 是 view.mas_width，view 已加入 superview
+    MASConstraint *result = [constraint equalToSuperview];
+
+    expect(result).to.beIdenticalTo(constraint);
+    expect(constraint.secondViewAttribute.view).to.beIdenticalTo(superview);
+    expect(constraint.secondViewAttribute.layoutAttribute).to.equal(NSLayoutAttributeWidth);
+    expect(constraint.layoutRelation).to.equal(NSLayoutRelationEqual);
+}
+
+- (void)testEqualToSuperviewInstallsCorrectLayoutConstraint {
+    [constraint equalToSuperview];
+    [constraint install];
+
+    expect(constraint.layoutConstraint.firstAttribute).to.equal(NSLayoutAttributeWidth);
+    expect(constraint.layoutConstraint.secondAttribute).to.equal(NSLayoutAttributeWidth);
+    expect(constraint.layoutConstraint.firstItem).to.beIdenticalTo(constraint.firstViewAttribute.view);
+    expect(constraint.layoutConstraint.secondItem).to.beIdenticalTo(superview);
+    expect(constraint.layoutConstraint.relation).to.equal(NSLayoutRelationEqual);
+    expect(constraint.layoutConstraint.constant).to.equal(0);
+    expect(constraint.layoutConstraint.multiplier).to.equal(1);
+}
+
+- (void)testEqualToSuperviewSupportsChainingOffset {
+    MASConstraint *result = [[constraint equalToSuperview] offset:20];
+    expect(result).to.beIdenticalTo(constraint);
+    expect(constraint.layoutConstant).to.equal(20);
+    expect(constraint.secondViewAttribute.view).to.beIdenticalTo(superview);
+}
+
+- (void)testEqualToSuperviewRaisesWhenNoSuperview {
+    MAS_VIEW *orphanView = MAS_VIEW.new; // 未加入任何父视图
+    MASViewConstraint *orphanConstraint = [[MASViewConstraint alloc] initWithFirstViewAttribute:orphanView.mas_top];
+    orphanConstraint.delegate = delegate;
+
+    expect(^{
+        [orphanConstraint equalToSuperview];
+    }).to.raise(@"NSInternalInconsistencyException");
+}
+
 SpecEnd

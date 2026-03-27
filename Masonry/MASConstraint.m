@@ -270,6 +270,8 @@
 
 - (MASConstraint * (^)(id key))key { MASMethodNotImplemented(); }
 
+- (MASConstraint *)equalToSuperview { MASMethodNotImplemented(); }
+
 - (void)setInsets:(MASEdgeInsets __unused)insets { MASMethodNotImplemented(); }
 
 - (void)setInset:(CGFloat __unused)inset { MASMethodNotImplemented(); }

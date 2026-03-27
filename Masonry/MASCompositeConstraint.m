@@ -88,6 +88,13 @@
     };
 }
 
+- (MASConstraint *)equalToSuperview {
+    for (MASConstraint *constraint in self.childConstraints.copy) {
+        [constraint equalToSuperview];
+    }
+    return self;
+}
+
 #pragma mark - attribute chaining
 
 - (MASConstraint *)addConstraintWithLayoutAttribute:(NSLayoutAttribute)layoutAttribute {

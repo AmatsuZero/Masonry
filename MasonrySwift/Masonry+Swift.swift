@@ -86,6 +86,18 @@ public final class MASSwiftConstraintProxy {
         return self
     }
 
+    /// 设置约束关系为"等于父视图的对应属性"
+    ///
+    /// 替代写法 `.equalTo(superview)` 或 `.equalTo(superview.mas_top)` 等，
+    /// 直接与父视图的同名属性建立等值约束。
+    /// 视图必须已加入视图层级（有父视图），否则触发断言。
+    /// - Returns: 当前代理对象，支持链式调用
+    @discardableResult
+    public func equalToSuperview() -> MASSwiftConstraintProxy {
+        constraint.equalToSuperview()
+        return self
+    }
+
     // MARK: - 偏移量设置（替代 mas_offset 宏）
 
     /// 设置约束常量偏移（CGFloat）
