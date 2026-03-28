@@ -1,3 +1,83 @@
+**[中文变更记录](CHANGELOG-Zh.md)**
+
+v1.3.1
+======
+
+#### - Added MASConstraintConvertible protocol
+
+Introduced `MASConstraintConvertible` as a formal protocol marking types that are valid constraint targets for `equalTo` / `greaterThanOrEqualTo` / `lessThanOrEqualTo`. Method signatures changed from bare `id` to `id<MASConstraintConvertible>`, giving `MASViewAttribute`, `UIView/NSView`, `NSValue/NSNumber`, and `NSArray` explicit compile-time declarations and improving type safety.
+
+#### - Enhanced debug information
+
+The `mas_equalTo()`, `mas_greaterThanOrEqualTo()`, and `mas_lessThanOrEqualTo()` macros now automatically embed the call-site file name and line number into the constraint's `mas_key`, so Xcode's "Unable to simultaneously satisfy constraints" log output points directly to the source line. New methods `equalToWithLocation:file:line:`, `greaterThanOrEqualToWithLocation:file:line:`, and `lessThanOrEqualToWithLocation:file:line:` are also exposed for advanced use.
+
+On the Swift side, `equalTo(_:)`, `greaterThanOrEqualTo(_:)`, and `lessThanOrEqualTo(_:)` now automatically capture `#fileID` and `#line` for clearer runtime assertion messages.
+
+
+v1.3.0
+======
+
+#### - MasonrySwift API aligned with SnapKit
+
+Refactored the `MasonrySwift` module so its API style and attribute names match SnapKit, reducing the learning curve for projects that use both frameworks.
+
+#### - Added equalToSuperView convenience method
+
+Added `equalToSuperView` as a shortcut for the common "constrain equal to superview" pattern.
+
+#### - Performance improvement
+
+Optimised the internal traversal logic for constraint installation, based on community feedback ([SnapKit/Masonry#578](https://github.com/SnapKit/Masonry/issues/578)).
+
+#### - Migrated to GitHub Actions
+
+CI/CD pipeline migrated from Travis CI to GitHub Actions; the Example project was converted to Swift Package format.
+
+
+v1.2.3
+======
+
+#### - Repository structure reorganisation
+
+Reorganised the repository layout so public headers and source files are grouped more clearly.
+
+
+v1.2.2
+======
+
+#### - Reduced cyclomatic complexity
+
+Refactored methods with excessive cyclomatic complexity to improve maintainability.
+
+
+v1.2.1
+======
+
+#### - Added MASAttributeOffset operator
+
+Added the `MASAttributeOffset` operator to simplify constraints that include an offset value.
+
+#### - Added SKILL.md
+
+Added the Masonry constraint expert skill document.
+
+
+v1.2.0
+======
+
+#### - Swift Package Manager support
+
+Added SPM integration via `Package.swift`, shipping `Masonry` and `MasonrySwift` as two library products. Minimum deployment targets: iOS 16+ / macOS 13+ / tvOS 16+.
+
+#### - Enhanced Swift support
+
+Deepened the `MasonrySwift` module with a fully native Swift DSL including operator overloads (`==`, `>=`, `<=`, `~`) and the `view.mas.makeConstraints` entry point, replacing ObjC macros that are unavailable in Swift.
+
+#### - Modernisation
+
+Modernised ObjC code to use the Xcode-recommended `NSLayoutConstraint` activate/deactivate API.
+
+
 v1.0.2
 ======
 

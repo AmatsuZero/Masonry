@@ -24,7 +24,7 @@ Masonry 是一个 ObjC 编写的 AutoLayout DSL，通过链式语法封装 `NSLa
 **支持平台**：iOS 16+ / macOS 13+ / tvOS 16+（SPM）；iOS 9+ / macOS 10.13+ / tvOS 9+（CocoaPods）
 
 **集成方式**：
-- **Swift Package Manager**（推荐）：`https://github.com/AmatsuZero/Masonry.git`，from: `"1.3.0"`
+- **Swift Package Manager**（推荐）：`https://github.com/AmatsuZero/Masonry.git`，from: `"1.3.1"`
 - **CocoaPods**：`pod 'Masonry'`（ObjC）/ `pod 'Masonry/Swift'`（ObjC + Swift DSL）
 - **Carthage**：`github "AmatsuZero/Masonry"`
 
@@ -184,6 +184,13 @@ view.mas_makeConstraints { make in
 // 给视图和约束命名，使控制台输出更清晰
 view.mas_key = @"avatarView";
 MASAttachKeys(titleLabel, subtitleLabel, containerView);
+
+// mas_equalTo() 宏会自动将调用处文件名和行号嵌入 mas_key，
+// 无需手动命名即可在 Xcode 约束冲突日志中定位源码位置
+make.top.mas_equalTo(superview.mas_top).offset(20);  // mas_key 自动设为 "ViewController.m:42"
+
+// 需要显式命名时仍可手动设置
+make.top.equalTo(superview.mas_top).offset(20).key(@"topPin");
 
 // 获取特定视图上所有 Masonry 约束
 NSArray *constraints = [MASViewConstraint installedConstraintsForView:view];

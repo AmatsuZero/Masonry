@@ -1,6 +1,6 @@
 # Masonry [![CI](https://github.com/AmatsuZero/Masonry/actions/workflows/ci.yml/badge.svg)](https://github.com/AmatsuZero/Masonry/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/AmatsuZero/Masonry/branch/master/graph/badge.svg)](https://codecov.io/gh/AmatsuZero/Masonry) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) ![Pod Version](https://img.shields.io/cocoapods/v/Masonry.svg?style=flat)
 
-**[中文文档](README-Zh.md)**
+**[中文文档](README-Zh.md)** | **[变更记录（中文）](CHANGELOG-Zh.md)**
 
 Masonry is a lightweight layout framework that wraps AutoLayout with a nicer syntax. It provides a chainable DSL for describing `NSLayoutConstraints`, resulting in layout code that is more concise and readable.
 
@@ -41,7 +41,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AmatsuZero/Masonry.git", from: "1.3.0")
+    .package(url: "https://github.com/AmatsuZero/Masonry.git", from: "1.3.1")
 ]
 ```
 
@@ -202,6 +202,20 @@ make.top.equalTo(label.mas_top).with.priority(600);
 
 // Later, update the constraint
 [self.topConstraint uninstall];
+```
+
+### Debugging
+
+The `mas_equalTo()`, `mas_greaterThanOrEqualTo()`, and `mas_lessThanOrEqualTo()` macros automatically embed the call-site file name and line number into the constraint's `mas_key`. This makes Xcode's "Unable to simultaneously satisfy constraints" log output point directly to the source line:
+
+```obj-c
+// mas_key is automatically set to "<file>:<line>" — no manual tagging needed
+make.top.mas_equalTo(superview.mas_top).offset(20);
+
+// You can still add an explicit key when needed
+make.top.equalTo(superview.mas_top).offset(20).key(@"topPin");
+// Or tag multiple views at once:
+MASAttachKeys(titleLabel, avatarView);
 ```
 
 ## Usage (Swift)

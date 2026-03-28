@@ -1,6 +1,6 @@
 # Masonry [![CI](https://github.com/AmatsuZero/Masonry/actions/workflows/ci.yml/badge.svg)](https://github.com/AmatsuZero/Masonry/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/AmatsuZero/Masonry/branch/master/graph/badge.svg)](https://codecov.io/gh/AmatsuZero/Masonry) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) ![Pod Version](https://img.shields.io/cocoapods/v/Masonry.svg?style=flat)
 
-**[English](README.md)**
+**[English](README.md)** | **[变更记录](CHANGELOG-Zh.md)**
 
 Masonry 是一个轻量级的布局框架，通过更简洁的语法封装 AutoLayout。它提供了链式 DSL 来描述 `NSLayoutConstraints`，使布局代码更加简洁易读。
 
@@ -41,7 +41,7 @@ Masonry 还会自动处理 `translatesAutoresizingMaskIntoConstraints` 和约束
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AmatsuZero/Masonry.git", from: "1.3.0")
+    .package(url: "https://github.com/AmatsuZero/Masonry.git", from: "1.3.1")
 ]
 ```
 
@@ -202,6 +202,20 @@ make.top.equalTo(label.mas_top).with.priority(600);
 
 // 之后可以更新约束
 [self.topConstraint uninstall];
+```
+
+### 调试
+
+`mas_equalTo()`、`mas_greaterThanOrEqualTo()`、`mas_lessThanOrEqualTo()` 宏会自动将调用处的文件名和行号嵌入约束的 `mas_key`，让 Xcode "Unable to simultaneously satisfy constraints" 输出能精确指向源代码位置：
+
+```obj-c
+// mas_key 自动设为 "<文件名>:<行号>"，无需手动标注
+make.top.mas_equalTo(superview.mas_top).offset(20);
+
+// 需要显式命名时仍可手动设置
+make.top.equalTo(superview.mas_top).offset(20).key(@"topPin");
+// 或批量标注多个视图：
+MASAttachKeys(titleLabel, avatarView);
 ```
 
 ## 使用方法（Swift）

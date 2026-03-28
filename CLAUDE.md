@@ -34,7 +34,7 @@ Tests/
 ├── XCTest+Spec.h         #   BDD-style SpecBegin/SpecEnd macros
 Examples.swiftpm/         # Swift Playground app with ObjC & Swift examples
 Package.swift             # SPM manifest (swift-tools-version: 6.0)
-Masonry.podspec           # CocoaPods spec (v1.3.0)
+Masonry.podspec           # CocoaPods spec (v1.3.1)
 ```
 
 ## Build & Test
@@ -96,7 +96,8 @@ The library uses a **block-scoped constraint maker + method chaining** DSL patte
 |-----------|---------|----------------|
 | `View+MASAdditions` | `View+MASAdditions.{h,m}` | Public entry API: `mas_makeConstraints:`, `mas_updateConstraints:`, `mas_remakeConstraints:` |
 | `MASConstraintMaker` | `MASConstraintMaker.{h,m}` | Constraint factory; collects constraints inside the block, then batch-installs them |
-| `MASConstraint` (abstract) | `MASConstraint.{h,m}` | Chainable constraint interface (`.top`, `.equalTo()`, `.offset()`, `.priority()`) |
+| `MASConstraint` (abstract) | `MASConstraint.{h,m}` | Chainable constraint interface (`.top`, `.equalTo()`, `.offset()`, `.priority()`); `mas_equalTo()` macros auto-embed call-site file/line into `mas_key` |
+| `MASConstraintConvertible` | `MASConstraintConvertible.h` | Marker protocol for valid constraint targets (`MASViewAttribute`, `UIView/NSView`, `NSValue/NSNumber`, `NSArray`) |
 | `MASViewConstraint` | `MASViewConstraint.{h,m}` | Single-attribute constraint (top / left / width, etc.) |
 | `MASCompositeConstraint` | `MASCompositeConstraint.{h,m}` | Multi-attribute composite (edges / size / center); expands into multiple `MASViewConstraint`s |
 | `MASViewAttribute` | `MASViewAttribute.{h,m}` | `(view, NSLayoutAttribute)` tuple — the source/target of a constraint |
