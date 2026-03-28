@@ -319,7 +319,10 @@ extension MASNativeView {
     /// }
     /// ```
     public var mas: MASViewDSL {
-        MASViewDSL(self)
+        get { MASViewDSL(self) }
+        // setter 仅用于让编译器允许对值类型属性赋值（如 view.mas.contentHuggingHorizontalPriority = 600）
+        // MASViewDSL 的 setter 内部直接操作 view 引用，因此赋值已在 getter 返回的临时值上生效
+        set { }
     }
 }
 
