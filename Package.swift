@@ -25,6 +25,9 @@ let targets: [Target] = [
     .target(
         name: "Masonry",
         path: "Masonry",
+        resources: [
+            .process("PrivacyInfo.xcprivacy"),
+        ],
         publicHeadersPath: "include",
         cSettings: [
             .headerSearchPath("."),

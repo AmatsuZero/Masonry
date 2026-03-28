@@ -21,6 +21,9 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = '9.0' # minimum SDK with autolayout
   s.requires_arc = true
   s.swift_versions = ['5.0', '5.5', '5.7', '5.9', '6.0']
+  s.resource_bundles = {
+    'Masonry_Privacy' => ['Masonry/PrivacyInfo.xcprivacy'],
+  }
 
   # 默认只包含 ObjC 核心模块
   s.default_subspecs = 'Core'
