@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Swift Package Manager 测试（iOS + macOS） ──
+  spm-test:
+    name: SPM Tests (${{ matrix.platform }})
+    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: iOS
+            destination: "platform=iOS Simulator,name=iPhone 16,OS=latest"
+            scheme: Masonry
+          - platform: macOS
+            destination: "platform=macOS"
+            scheme: Masonry
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
+
+      - name: Build and Test
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -scheme "${{ matrix.scheme }}" \
+            -destination "${{ matrix.destination }}" \
+            -enableCodeCoverage YES \
+            -resultBundlePath TestResults-${{ matrix.platform }}.xcresult \
+            | xcpretty -c
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults-${{ matrix.platform }}
+          path: TestResults-${{ matrix.platform }}.xcresult
+
+  # ── 代码覆盖率 ──
+  coverage:
+    name: Code Coverage
+    runs-on: macos-15
+    needs: []  # 独立运行，不依赖其他 job
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
+
+      - name: Run Tests with Coverage
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -scheme "Masonry" \
+            -destination "platform=macOS" \
+            -enableCodeCoverage YES \
+            -resultBundlePath CoverageResult.xcresult \
+            | xcpretty -c
+
+      - name: Generate Coverage Report
+        run: |
+          xcrun llvm-cov export \
+            -format="lcov" \
+            -instr-profile $(find CoverageResult.xcresult -name "*.profdata" -type f | head -1) \
+            $(find ~/Library/Developer/Xcode/DerivedData -name "MasonryTests.xctest" -type d | head -1)/Contents/MacOS/MasonryTests \
+            > coverage.lcov 2>/dev/null || true
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.lcov
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  # ── CocoaPods 验证 ──
+  pod-lint:
+    name: Pod Lint
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
+
+      - name: Pod Lib Lint
+        run: pod lib lint --allow-warnings
