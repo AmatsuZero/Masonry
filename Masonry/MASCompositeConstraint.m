@@ -131,8 +131,8 @@
 
 #pragma mark - debug helpers
 
-- (MASConstraint * (^)(id))key {
-    return ^id(id key) {
+- (MASConstraint * (^)(id _Nullable))key {
+    return ^id(id _Nullable key) {
         self.mas_key = [key description];
         int i = 0;
         for (MASConstraint *constraint in self.childConstraints) {

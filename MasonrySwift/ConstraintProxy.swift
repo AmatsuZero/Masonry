@@ -257,8 +257,7 @@ public final class MASSwiftConstraintProxy {
     /// - Returns: 当前代理对象，支持链式调用
     @discardableResult
     public func key(_ value: Any?) -> MASSwiftConstraintProxy {
-        guard let unwrapped = value else { return self }
-        constraint.key()("\(unwrapped)")
+        constraint.key()(value)
         return self
     }
 
@@ -571,8 +570,7 @@ public final class MASSwiftConstraintProxy {
     /// - Returns: 当前代理对象，支持链式调用
     @discardableResult
     public func labeled(_ label: String) -> MASSwiftConstraintProxy {
-        constraint.key()(label)
-        return self
+        key(label)
     }
 
     // MARK: - 外部更新方法（对齐 SnapKit Constraint.updateOffset / updateInsets）
