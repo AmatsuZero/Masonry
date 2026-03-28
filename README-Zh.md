@@ -1,14 +1,14 @@
 # Masonry [![CI](https://github.com/AmatsuZero/Masonry/actions/workflows/ci.yml/badge.svg)](https://github.com/AmatsuZero/Masonry/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/AmatsuZero/Masonry/branch/master/graph/badge.svg)](https://codecov.io/gh/AmatsuZero/Masonry) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) ![Pod Version](https://img.shields.io/cocoapods/v/Masonry.svg?style=flat)
 
-**[中文文档](README-Zh.md)**
+**[English](README.md)**
 
-Masonry is a lightweight layout framework that wraps AutoLayout with a nicer syntax. It provides a chainable DSL for describing `NSLayoutConstraints`, resulting in layout code that is more concise and readable.
+Masonry 是一个轻量级的布局框架，通过更简洁的语法封装 AutoLayout。它提供了链式 DSL 来描述 `NSLayoutConstraints`，使布局代码更加简洁易读。
 
-Masonry supports **iOS**, **macOS**, and **tvOS**, and ships with a native **Swift DSL** via the `MasonrySwift` module.
+Masonry 支持 **iOS**、**macOS** 和 **tvOS**，并通过 `MasonrySwift` 模块提供原生 **Swift DSL**。
 
-## Why Masonry?
+## 为什么选择 Masonry？
 
-Creating constraints with raw `NSLayoutConstraint` API is verbose and hard to read:
+使用原生 `NSLayoutConstraint` API 创建约束非常冗长且难以阅读：
 
 ```obj-c
 [superview addConstraints:@[
@@ -19,11 +19,11 @@ Creating constraints with raw `NSLayoutConstraint` API is verbose and hard to re
                                  attribute:NSLayoutAttributeTop
                                 multiplier:1.0
                                   constant:padding.top],
-    // ... three more constraints just for edges
+    // ... 仅仅是四边约束就需要更多代码
 ]];
 ```
 
-With Masonry, the same layout is expressed in a single line:
+使用 Masonry，同样的布局只需一行代码：
 
 ```obj-c
 [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -31,13 +31,13 @@ With Masonry, the same layout is expressed in a single line:
 }];
 ```
 
-Masonry also handles `translatesAutoresizingMaskIntoConstraints` and constraint installation automatically.
+Masonry 还会自动处理 `translatesAutoresizingMaskIntoConstraints` 和约束的安装。
 
-## Installation
+## 安装
 
-### Swift Package Manager (Recommended)
+### Swift Package Manager（推荐）
 
-Add to your `Package.swift`:
+添加到你的 `Package.swift`：
 
 ```swift
 dependencies: [
@@ -45,14 +45,14 @@ dependencies: [
 ]
 ```
 
-Two library products are available:
-- **`Masonry`** — Objective-C core
-- **`MasonrySwift`** — Swift native DSL (depends on `Masonry`)
+提供两个库产品：
+- **`Masonry`** — Objective-C 核心库
+- **`MasonrySwift`** — Swift 原生 DSL（依赖 `Masonry`）
 
 ### CocoaPods
 
 ```ruby
-# Objective-C only
+# 仅 Objective-C
 pod 'Masonry'
 
 # Objective-C + Swift DSL
@@ -65,9 +65,9 @@ pod 'Masonry/Swift'
 github "AmatsuZero/Masonry"
 ```
 
-## Usage (Objective-C)
+## 使用方法（Objective-C）
 
-### Creating Constraints
+### 创建约束
 
 ```obj-c
 UIEdgeInsets padding = UIEdgeInsetsMake(10, 10, 10, 10);
@@ -80,7 +80,7 @@ UIEdgeInsets padding = UIEdgeInsetsMake(10, 10, 10, 10);
 }];
 ```
 
-Or more concisely:
+或者更简洁的写法：
 
 ```obj-c
 [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -88,15 +88,15 @@ Or more concisely:
 }];
 ```
 
-### Equality Relations
+### 等式关系
 
-| Method | NSLayoutRelation |
-|--------|-----------------|
+| 方法 | NSLayoutRelation |
+|------|-----------------|
 | `.equalTo` | `NSLayoutRelationEqual` |
 | `.lessThanOrEqualTo` | `NSLayoutRelationLessThanOrEqual` |
 | `.greaterThanOrEqualTo` | `NSLayoutRelationGreaterThanOrEqual` |
 
-These accept the following argument types:
+这些方法接受以下参数类型：
 
 #### 1. MASViewAttribute
 
@@ -121,7 +121,7 @@ make.centerX.lessThanOrEqualTo(view2.mas_left);
 #### 2. UIView / NSView
 
 ```obj-c
-// These two constraints are exactly the same
+// 以下两个约束完全等价
 make.left.greaterThanOrEqualTo(label);
 make.left.greaterThanOrEqualTo(label.mas_left);
 ```
@@ -134,16 +134,16 @@ make.width.greaterThanOrEqualTo(@200);
 make.width.lessThanOrEqualTo(@400);
 ```
 
-For alignment attributes, passing an `NSNumber` creates a constraint relative to the superview:
+对于对齐属性，传入 `NSNumber` 会创建相对于父视图的约束：
 
 ```obj-c
-// creates view.left = view.superview.left + 10
+// 创建 view.left = view.superview.left + 10
 make.left.lessThanOrEqualTo(@10);
 ```
 
-#### Autoboxing with Primitives
+#### 使用基本类型的自动装箱
 
-Use `mas_` prefixed macros to pass primitives and structs directly:
+使用 `mas_` 前缀的宏可以直接传入基本类型和结构体：
 
 ```obj-c
 make.top.mas_equalTo(42);
@@ -152,7 +152,7 @@ make.size.mas_equalTo(CGSizeMake(50, 100));
 make.edges.mas_equalTo(UIEdgeInsetsMake(10, 0, 10, 0));
 ```
 
-> Define `MAS_SHORTHAND_GLOBALS` before importing Masonry to use unprefixed versions.
+> 在导入 Masonry 之前定义 `MAS_SHORTHAND_GLOBALS` 可以使用不带前缀的版本。
 
 #### 4. NSArray
 
@@ -161,36 +161,36 @@ make.height.equalTo(@[view1.mas_height, view2.mas_height]);
 make.left.equalTo(@[view1, @100, view3.right]);
 ```
 
-### Attribute Chaining
+### 属性链式调用
 
 ```obj-c
-// Set left, right, and bottom to superview, top to another view
+// 将 left、right 和 bottom 设置为与父视图相同，top 设置为另一个视图
 make.left.right.and.bottom.equalTo(superview);
 make.top.equalTo(otherView);
 ```
 
-### Priority
+### 优先级
 
 ```obj-c
 make.left.greaterThanOrEqualTo(label.mas_left).with.priorityLow();
 make.top.equalTo(label.mas_top).with.priority(600);
 ```
 
-### Updating & Remaking Constraints
+### 更新与重建约束
 
 ```obj-c
-// Update existing constraints (or create if not found)
+// 更新已有约束（如果不存在则创建）
 [view1 mas_updateConstraints:^(MASConstraintMaker *make) {
     make.leading.equalTo(superview).offset(newPadding);
 }];
 
-// Remove all existing constraints and create new ones
+// 移除所有已有约束并创建新约束
 [view1 mas_remakeConstraints:^(MASConstraintMaker *make) {
     make.edges.equalTo(superview).insets(newPadding);
 }];
 ```
 
-### Holding Constraint References
+### 持有约束引用
 
 ```obj-c
 @property (nonatomic, strong) MASConstraint *topConstraint;
@@ -200,13 +200,13 @@ make.top.equalTo(label.mas_top).with.priority(600);
     make.left.equalTo(superview.mas_left).with.offset(padding.left);
 }];
 
-// Later, update the constraint
+// 之后可以更新约束
 [self.topConstraint uninstall];
 ```
 
-## Usage (Swift)
+## 使用方法（Swift）
 
-The `MasonrySwift` module provides a type-safe, Swift-native DSL that replaces ObjC macros:
+`MasonrySwift` 模块提供了类型安全的 Swift 原生 DSL，替代 ObjC 宏：
 
 ```swift
 import MasonrySwift
@@ -217,48 +217,48 @@ view.mas.makeConstraints { make in
     make.height.equalTo(44)
 }
 
-// Update constraints
+// 更新约束
 view.mas.updateConstraints { make in
     make.top.equalTo(superview).offset(newValue)
 }
 
-// Remake constraints
+// 重建约束
 view.mas.remakeConstraints { make in
     make.edges.equalTo(superview).inset(padding)
 }
 ```
 
-### Swift Operators
+### Swift 运算符
 
-The Swift module also supports operator-based constraint creation:
+Swift 模块还支持基于运算符的约束创建：
 
 ```swift
 view.mas.makeConstraints { make in
     make.top == superview.mas_top + 20
     make.left >= superview.mas_left + 16
     make.width <= 200
-    make.height == 44 ~ .defaultHigh  // with priority
+    make.height == 44 ~ .defaultHigh  // 带优先级
 }
 ```
 
-## Examples
+## 示例
 
-Check out the **Examples.swiftpm** Swift Playground project in the repository for interactive examples covering:
+查看仓库中的 **Examples.swiftpm** Swift Playground 项目，包含以下交互式示例：
 
-- Basic constraints
-- Animations
-- Scroll views
-- Aspect fit
-- Safe area layout guides
-- View distribution
-- And more
+- 基础约束
+- 动画
+- 滚动视图
+- 等比适配
+- 安全区域布局指南
+- 视图分布
+- 更多...
 
-Open it with Xcode:
+使用 Xcode 打开：
 
 ```bash
 open Examples.swiftpm
 ```
 
-## License
+## 许可证
 
-Masonry is released under the MIT License. See [LICENSE](LICENSE) for details.
+Masonry 基于 MIT 许可证发布。详见 [LICENSE](LICENSE)。

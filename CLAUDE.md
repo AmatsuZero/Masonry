@@ -2,98 +2,169 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 项目简介
+## Project Overview
 
-Masonry 是一个 Objective-C 编写的 iOS/macOS/tvOS 自动布局 DSL 库，通过链式语法封装 `NSLayoutConstraints` API，同时提供现代 Swift 支持层。
+Masonry is a lightweight Auto Layout DSL library for iOS / macOS / tvOS, written in Objective-C with a native Swift support layer. It wraps `NSLayoutConstraint` with a chainable, block-scoped syntax that makes layout code concise and readable.
 
-## 构建与测试
+The project ships **two library products**:
 
-### 环境准备
+| Product | Language | Description |
+|---------|----------|-------------|
+| `Masonry` | Objective-C | Core constraint DSL (`mas_makeConstraints:`, etc.) |
+| `MasonrySwift` | Swift | Type-safe Swift DSL & operators (depends on `Masonry`) |
 
-```bash
-pod install  # 安装 CocoaPods 依赖，生成 .xcworkspace
+## Repository Layout
+
+```
+Masonry/                  # ObjC core source
+├── include/              #   Public headers (MASConstraint.h, View+MASAdditions.h, …)
+├── MASConstraint+Private.h  # Private header
+├── *.m                   #   Implementations
+MasonrySwift/             # Swift native DSL
+├── ConstraintProxy.swift #   MASSwiftConstraint – chainable constraint proxy
+├── MakerProxy.swift      #   MASSwiftConstraintMaker – block-scoped maker
+├── MasonrySwiftCore.swift#   Core bridging utilities
+├── Operators.swift       #   Operator overloads (==, >=, <=, ~)
+├── Utilities.swift       #   Helper types & extensions
+├── ViewDSL.swift         #   view.mas.makeConstraints { … } entry point
+Tests/
+├── Specs/                #   ObjC unit tests (XCTest + Expecta-style BDD macros)
+├── MasonrySwiftTests/    #   Swift DSL unit tests
+├── MASTestExpectation.*  #   Custom XCTest expectation helpers
+├── XCTest+Spec.h         #   BDD-style SpecBegin/SpecEnd macros
+Examples.swiftpm/         # Swift Playground app with ObjC & Swift examples
+Package.swift             # SPM manifest (swift-tools-version: 6.0)
+Masonry.podspec           # CocoaPods spec (v1.3.0)
 ```
 
-### 构建
+## Build & Test
+
+### Prerequisites
+
+- **Xcode 16+** (the CI uses `macos-15` + `Xcode_16.app`)
+- For CocoaPods workflow: `pod install` to generate `.xcworkspace`
+
+### Swift Package Manager (Primary)
 
 ```bash
-# iOS 框架
+# Build
+swift build
+
+# Run all tests (ObjC + Swift)
+swift test
+
+# Build & test via xcodebuild (matches CI)
+xcodebuild test \
+  -scheme "Masonry" \
+  -destination "platform=macOS" \
+  -enableCodeCoverage YES
+
+# iOS simulator
+xcodebuild test \
+  -scheme "Masonry" \
+  -destination "platform=iOS Simulator,name=iPhone 16,OS=latest" \
+  -enableCodeCoverage YES
+```
+
+### CocoaPods
+
+```bash
+pod install
 xcodebuild -workspace 'Masonry.xcworkspace' -scheme 'Masonry iOS' \
   -configuration Debug -sdk iphonesimulator clean build
 
-# macOS 框架
-xcodebuild -workspace 'Masonry.xcworkspace' -scheme 'Masonry OSX' \
-  -configuration Debug clean build
-
-# SPM
-swift build
+# Lint
+pod lib lint --allow-warnings
 ```
 
-### 运行测试
+## Architecture
 
-```bash
-# 全量测试
-xcodebuild -workspace 'Masonry.xcworkspace' -scheme 'Masonry iOS Tests' \
-  -configuration Debug -sdk iphonesimulator \
-  -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.0' clean test
+### Core Design Pattern
 
-# SPM 测试
-swift test
-```
-
-## 代码架构
-
-### 核心设计模式
-
-库采用**块作用域 + 方法链式调用**的 DSL 模式：
+The library uses a **block-scoped constraint maker + method chaining** DSL pattern:
 
 ```objc
 [view mas_makeConstraints:^(MASConstraintMaker *make) {
     make.top.left.equalTo(superview);
-    make.size.equalTo(CGSizeMake(100, 50));
+    make.size.mas_equalTo(CGSizeMake(100, 50));
 }];
 ```
 
-### 关键组件及职责
+### Key Components
 
-| 组件 | 职责 |
-|------|------|
-| `View+MASAdditions` | 对外主 API：`mas_makeConstraints:`、`mas_updateConstraints:`、`mas_remakeConstraints:` |
-| `MASConstraintMaker` | 约束工厂，在块内收集约束，最终批量安装 |
-| `MASConstraint`（抽象） | 链式约束接口，定义 `.top`、`.equalTo()`、`.offset()` 等链式方法 |
-| `MASViewConstraint` | 单属性约束实现（top/left/width 等） |
-| `MASCompositeConstraint` | 多属性组合约束（edges/size/center），展开后生成多个 `MASViewConstraint` |
-| `MASViewAttribute` | `(视图, NSLayoutAttribute)` 二元组，是约束的目标/来源 |
-| `MASLayoutConstraint` | `NSLayoutConstraint` 子类，携带 `mas_key` 用于调试标识 |
-| `MASUtilities.h` | 跨平台宏（`MAS_VIEW`、`MASEdgeInsets`）及值装箱工具 |
-| `Masonry+Swift.swift` | Swift 包装层：`MASSwiftConstraintProxy` 替代 ObjC 宏，提供类型安全 API |
+| Component | File(s) | Responsibility |
+|-----------|---------|----------------|
+| `View+MASAdditions` | `View+MASAdditions.{h,m}` | Public entry API: `mas_makeConstraints:`, `mas_updateConstraints:`, `mas_remakeConstraints:` |
+| `MASConstraintMaker` | `MASConstraintMaker.{h,m}` | Constraint factory; collects constraints inside the block, then batch-installs them |
+| `MASConstraint` (abstract) | `MASConstraint.{h,m}` | Chainable constraint interface (`.top`, `.equalTo()`, `.offset()`, `.priority()`) |
+| `MASViewConstraint` | `MASViewConstraint.{h,m}` | Single-attribute constraint (top / left / width, etc.) |
+| `MASCompositeConstraint` | `MASCompositeConstraint.{h,m}` | Multi-attribute composite (edges / size / center); expands into multiple `MASViewConstraint`s |
+| `MASViewAttribute` | `MASViewAttribute.{h,m}` | `(view, NSLayoutAttribute)` tuple — the source/target of a constraint |
+| `MASLayoutConstraint` | `MASLayoutConstraint.{h,m}` | `NSLayoutConstraint` subclass carrying `mas_key` for debug identification |
+| `MASUtilities.h` | `MASUtilities.h` | Cross-platform macros (`MAS_VIEW`, `MASEdgeInsets`) and value-boxing utilities |
+| `NSArray+MASAdditions` | `NSArray+MASAdditions.{h,m}` | Batch constraint creation on arrays of views (distribution) |
+| `NSLayoutConstraint+MASDebugAdditions` | `NSLayoutConstraint+MASDebugAdditions.{h,m}` | Enhanced debug descriptions for constraints |
+| `ViewController+MASAdditions` | `ViewController+MASAdditions.{h,m}` | `topLayoutGuide` / `bottomLayoutGuide` support |
 
-### 约束安装流程
+### Constraint Installation Flow
 
-1. 调用 `mas_makeConstraints:` → 创建 `MASConstraintMaker`
-2. 块内链式调用 → 构建 `MASViewConstraint`/`MASCompositeConstraint` 集合
-3. 块结束 → `MASConstraintMaker` 调用 `install` 将约束转换为 `NSLayoutConstraint` 并激活
+1. Call `mas_makeConstraints:` → creates a `MASConstraintMaker` bound to the view
+2. Inside the block, chained calls build `MASViewConstraint` / `MASCompositeConstraint` objects
+3. Block returns → `MASConstraintMaker.install` converts each constraint into an `NSLayoutConstraint` and activates it on the nearest common ancestor
 
-### Swift 互操作
+For `mas_updateConstraints:`, existing constraints with matching attributes are updated in-place.
+For `mas_remakeConstraints:`, all existing Masonry constraints are uninstalled first.
 
-ObjC 宏（`mas_equalTo`、`mas_offset`）在 Swift 中不可用，由 `MASSwiftConstraintProxy` 代替：
+### Swift Module (`MasonrySwift`)
 
+ObjC macros (`mas_equalTo`, `mas_offset`) are unavailable in Swift. The `MasonrySwift` module provides a fully native alternative:
+
+| Swift File | Role |
+|------------|------|
+| `ViewDSL.swift` | `view.mas.makeConstraints { … }` — main entry point via `MASViewDSL` |
+| `MakerProxy.swift` | `MASSwiftConstraintMaker` — Swift-side maker proxy |
+| `ConstraintProxy.swift` | `MASSwiftConstraint` — chainable constraint with `.equalTo()`, `.offset()`, `.inset()` |
+| `Operators.swift` | Operator overloads: `==`, `>=`, `<=` for constraints; `~` for priority; `+`/`-` for offset |
+| `Utilities.swift` | `MASSwiftAttribute`, priority helpers, edge inset utilities |
+| `MasonrySwiftCore.swift` | Core bridging between Swift proxies and ObjC `MASConstraintMaker` |
+
+Swift usage:
 ```swift
-view.mas_makeConstraints { make in
-    make?.top.equalTo()(superview?.mas_top)
-    make?.left.offset()(16)
+import MasonrySwift
+
+view.mas.makeConstraints { make in
+    make.top.equalTo(superview.mas_top).offset(20)
+    make.left.right.equalTo(superview).inset(16)
+    make.height.equalTo(44)
+}
+
+// Operator syntax
+view.mas.makeConstraints { make in
+    make.top == superview.mas_top + 20
+    make.width <= 200
+    make.height == 44 ~ .defaultHigh
 }
 ```
 
-### 平台抽象
+### Platform Abstraction
 
-通过 `MASUtilities.h` 中的条件编译宏统一 iOS/macOS/tvOS：
+Conditional compilation macros in `MASUtilities.h` unify iOS / macOS / tvOS:
 - `MAS_VIEW` → `UIView` / `NSView`
 - `MASEdgeInsets` → `UIEdgeInsets` / `NSEdgeInsets`
+- `MAS_VIEW_CONTROLLER` → `UIViewController` / `NSViewController`
 
-### 测试规范
+### Testing Conventions
 
-测试位于 `Tests/Specs/`，使用 XCTest + Expecta 断言库 + BDD 风格宏（`SpecBegin`/`SpecEnd`、`it()`/`describe()`）。每个核心类对应一个 `*Spec.m` 文件。
+- **ObjC tests** are in `Tests/Specs/`, using XCTest with BDD-style macros (`SpecBegin` / `SpecEnd`, `describe()`, `it()`) and custom `MASTestExpectation` matchers. Each core class has a corresponding `*Spec.m` file.
+- **Swift tests** are in `Tests/MasonrySwiftTests/`, using standard XCTest assertions.
+- CI runs tests on both **macOS** and **iOS Simulator** platforms.
+
+### Coding Conventions
+
+- ObjC files use the `MAS` prefix for all public classes and categories.
+- Public headers live in `Masonry/include/` and `MasonrySwift/` respectively.
+- The SPM manifest uses **Swift 6.0 tools version** with **Swift language mode v5** (`swiftLanguageModes: [.v5]`).
+- Minimum deployment targets: iOS 16, macOS 13, tvOS 16 (SPM); iOS 9, macOS 10.13, tvOS 9 (CocoaPods).
 
 <!-- rtk-instructions v2 -->
 # RTK (Rust Token Killer) - Token-Optimized Commands
