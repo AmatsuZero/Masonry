@@ -48,6 +48,12 @@
     return constraints;
 }
 
+- (NSArray *)prepare {
+    NSArray *constraints = self.constraints.copy;
+    [self.constraints removeAllObjects];
+    return constraints;
+}
+
 #pragma mark - MASConstraintDelegate
 
 - (void)constraint:(MASConstraint *)constraint shouldBeReplacedWithConstraint:(MASConstraint *)replacementConstraint {

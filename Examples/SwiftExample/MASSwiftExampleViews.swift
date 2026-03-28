@@ -303,3 +303,137 @@ final class CompoundAssignmentExampleView: MASNativeView {
         }
     }
 }
+
+// MARK: - SnapKit 对齐新增 API 示例
+
+/// 演示与 SnapKit 对齐后新增的 API
+///
+/// 包含：greaterThanOrEqualToSuperview / lessThanOrEqualToSuperview、
+/// labeled、MASConstraintPriority 枚举、updateOffset、
+/// directionalEdges、margins、group、removeConstraints、
+/// prepareConstraints、contentHugging/CompressionResistance 优先级
+@MainActor
+final class SnapKitAlignedExampleView: MASNativeView {
+
+    private let box = MASNativeView()
+    private var topProxy: MASSwiftConstraintProxy!
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupViews()
+    }
+
+    private func setupViews() {
+        let header = MASNativeView()
+        let content = MASNativeView()
+        let footer = MASNativeView()
+
+        addSubview(header)
+        addSubview(content)
+        addSubview(footer)
+        addSubview(box)
+
+        // ── greaterThanOrEqualToSuperview / lessThanOrEqualToSuperview ──
+        // 对齐 SnapKit: make.top.greaterThanOrEqualToSuperview()
+        header.mas.makeConstraints { make in
+            make.top.greaterThanOrEqualToSuperview().offset(10)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(60)
+        }
+
+        // ── labeled（调试标签，对齐 SnapKit .labeled()）──
+        content.mas.makeConstraints { make in
+            make.top.equalTo(header.mas.bottom).labeled("contentTop")
+            make.left.right.equalToSuperview().labeled("contentHorizontal")
+            make.height.greaterThanOrEqualTo(100).labeled("contentMinHeight")
+        }
+
+        // ── MASConstraintPriority 枚举（对齐 SnapKit .priority(.high)）──
+        footer.mas.makeConstraints { make in
+            make.top.equalTo(content.mas.bottom).priority(.high)
+            make.left.right.equalToSuperview()
+            make.bottom.lessThanOrEqualToSuperview()
+            make.height.equalTo(44).priority(.medium)
+        }
+
+        // ── ~ 运算符 + MASConstraintPriority ──
+        box.mas.makeConstraints { make in
+            make.center.equalToSuperview()
+            (make.width == 200) ~ .high
+            (make.height == 100) ~ .medium
+        }
+
+        // ── directionalEdges（对齐 SnapKit .directionalEdges）──
+        let directionalView = MASNativeView()
+        addSubview(directionalView)
+        directionalView.mas.makeConstraints { make in
+            make.directionalEdges.equalToSuperview().inset(20)
+        }
+
+        // ── group（约束分组）──
+        let groupedView = MASNativeView()
+        addSubview(groupedView)
+        groupedView.mas.makeConstraints { make in
+            let horizontalGroup = make.group {
+                make.left.equalToSuperview().offset(16)
+                make.right.equalToSuperview().offset(-16)
+            }
+            horizontalGroup.priority(.high)
+            make.top.bottom.equalToSuperview()
+        }
+
+        // ── updateOffset（外部更新约束偏移）──
+        topProxy = box.mas.makeConstraints { make in
+            make.top.equalToSuperview().offset(20)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(50)
+        }.first?.swift
+    }
+
+    /// 演示外部更新约束偏移量
+    func moveDown() {
+        topProxy?.updateOffset(60)
+    }
+
+    /// 演示 removeConstraints
+    func clearConstraints() {
+        box.mas.removeConstraints()
+    }
+
+    #if canImport(UIKit)
+    /// 演示 contentHugging / contentCompressionResistance 优先级
+    func setupContentPriorities() {
+        let label = UILabel()
+        addSubview(label)
+
+        // 对齐 SnapKit: label.snp.contentHuggingHorizontalPriority = 600
+        label.mas.contentHuggingHorizontalPriority = 600
+        label.mas.contentHuggingVerticalPriority = 750
+        label.mas.contentCompressionResistanceHorizontalPriority = 800
+        label.mas.contentCompressionResistanceVerticalPriority = 1000
+    }
+
+    /// 演示 margins 复合属性
+    func setupMargins() {
+        let marginView = UIView()
+        addSubview(marginView)
+        marginView.mas.makeConstraints { make in
+            make.margins.equalToSuperview()
+        }
+    }
+
+    /// 演示 directionalMargins 复合属性
+    func setupDirectionalMargins() {
+        let dirMarginView = UIView()
+        addSubview(dirMarginView)
+        dirMarginView.mas.makeConstraints { make in
+            make.directionalMargins.equalToSuperview()
+        }
+    }
+    #endif
+}

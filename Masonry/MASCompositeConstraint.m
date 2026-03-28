@@ -12,7 +12,7 @@
 @interface MASCompositeConstraint () <MASConstraintDelegate>
 
 @property (nonatomic, strong) id mas_key;
-@property (nonatomic, strong) NSMutableArray *childConstraints;
+@property (nonatomic, strong, readwrite) NSMutableArray *childConstraints;
 
 @end
 
@@ -91,6 +91,20 @@
 - (MASConstraint *)equalToSuperview {
     for (MASConstraint *constraint in self.childConstraints.copy) {
         [constraint equalToSuperview];
+    }
+    return self;
+}
+
+- (MASConstraint *)greaterThanOrEqualToSuperview {
+    for (MASConstraint *constraint in self.childConstraints.copy) {
+        [constraint greaterThanOrEqualToSuperview];
+    }
+    return self;
+}
+
+- (MASConstraint *)lessThanOrEqualToSuperview {
+    for (MASConstraint *constraint in self.childConstraints.copy) {
+        [constraint lessThanOrEqualToSuperview];
     }
     return self;
 }

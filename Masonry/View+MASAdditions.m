@@ -34,6 +34,13 @@
     return [constraintMaker install];
 }
 
+- (NSArray *)mas_prepareConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *make))block {
+    self.translatesAutoresizingMaskIntoConstraints = NO;
+    MASConstraintMaker *constraintMaker = [[MASConstraintMaker alloc] initWithView:self];
+    block(constraintMaker);
+    return [constraintMaker prepare];
+}
+
 #pragma mark - NSLayoutAttribute properties
 
 - (MASViewAttribute *)mas_left {

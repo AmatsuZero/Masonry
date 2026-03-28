@@ -136,6 +136,14 @@ NS_SWIFT_UI_ACTOR
  */
 - (NSArray<__kindof MASConstraint *> *)install;
 
+/**
+ *  Returns all constraints that have been created by this maker without installing them.
+ *  The constraints can be installed later by calling `install` on each constraint individually.
+ *
+ *  @return an array of all the created (but not installed) MASConstraints
+ */
+- (NSArray<__kindof MASConstraint *> *)prepare;
+
 - (MASConstraint * (^)(dispatch_block_t))group;
 
 @end

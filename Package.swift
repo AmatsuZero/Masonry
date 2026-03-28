@@ -54,6 +54,7 @@ let package = Package(
                 "MasonryTests-Info.plist",
                 "MasonryTestsLoader",
                 "GcovTestObserver.m",
+                "MasonrySwiftTests",
             ],
             cSettings: [
                 .headerSearchPath("."),
@@ -61,6 +62,13 @@ let package = Package(
                 .headerSearchPath("../Masonry"),
                 .headerSearchPath("../Masonry/include"),
             ]
+        ),
+
+        // ── Swift Tests: MasonrySwift 新增 API 测试 ──
+        .testTarget(
+            name: "MasonrySwiftTests",
+            dependencies: ["Masonry", "MasonrySwift"],
+            path: "Tests/MasonrySwiftTests"
         ),
 
         // ── Example: MasonrySwift 使用示例 ──

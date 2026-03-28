@@ -121,6 +121,22 @@ MAS_SWIFT_UI_ACTOR
 - (MASConstraint *)equalToSuperview;
 
 /**
+ *  Sets the constraint relation to NSLayoutRelationGreaterThanOrEqual with the corresponding
+ *  attribute of the receiver view's superview.
+ *  Equivalent to greaterThanOrEqualTo(superview).
+ *  The view must have a superview before this constraint is installed.
+ */
+- (MASConstraint *)greaterThanOrEqualToSuperview;
+
+/**
+ *  Sets the constraint relation to NSLayoutRelationLessThanOrEqual with the corresponding
+ *  attribute of the receiver view's superview.
+ *  Equivalent to lessThanOrEqualTo(superview).
+ *  The view must have a superview before this constraint is installed.
+ */
+- (MASConstraint *)lessThanOrEqualToSuperview;
+
+/**
  *	Optional semantic property which has no effect but improves the readability of constraint
  */
 - (MASConstraint *)with;

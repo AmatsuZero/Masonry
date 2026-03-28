@@ -39,7 +39,7 @@ static char kInstalledConstraintsKey;
 
 @property (nonatomic, strong, readwrite) MASViewAttribute *secondViewAttribute;
 @property (nonatomic, weak) MAS_VIEW *installedView;
-@property (nonatomic, weak) MASLayoutConstraint *layoutConstraint;
+@property (nonatomic, weak, readwrite) MASLayoutConstraint *layoutConstraint;
 @property (nonatomic, assign) NSLayoutRelation layoutRelation;
 @property (nonatomic, assign) MASLayoutPriority layoutPriority;
 @property (nonatomic, assign) CGFloat layoutMultiplier;
@@ -203,6 +203,22 @@ static char kInstalledConstraintsKey;
              @"Cannot use equalToSuperview on a view without a superview. "
              @"Make sure the view is added to a view hierarchy before making constraints.");
     return self.equalToWithRelation(superview, NSLayoutRelationEqual);
+}
+
+- (MASConstraint *)greaterThanOrEqualToSuperview {
+    MAS_VIEW *superview = self.firstViewAttribute.view.superview;
+    NSAssert(superview,
+             @"Cannot use greaterThanOrEqualToSuperview on a view without a superview. "
+             @"Make sure the view is added to a view hierarchy before making constraints.");
+    return self.equalToWithRelation(superview, NSLayoutRelationGreaterThanOrEqual);
+}
+
+- (MASConstraint *)lessThanOrEqualToSuperview {
+    MAS_VIEW *superview = self.firstViewAttribute.view.superview;
+    NSAssert(superview,
+             @"Cannot use lessThanOrEqualToSuperview on a view without a superview. "
+             @"Make sure the view is added to a view hierarchy before making constraints.");
+    return self.equalToWithRelation(superview, NSLayoutRelationLessThanOrEqual);
 }
 
 #pragma mark - Semantic properties

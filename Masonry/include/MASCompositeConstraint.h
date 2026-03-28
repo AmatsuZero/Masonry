@@ -19,6 +19,11 @@ NS_SWIFT_NAME(CompositeConstraint)
 @interface MASCompositeConstraint : MASConstraint
 
 /**
+ *  The array of child MASConstraint objects contained in this composite.
+ */
+@property (nonatomic, strong, readonly) NSMutableArray<__kindof MASConstraint *> *childConstraints;
+
+/**
  *	Creates a composite with a predefined array of children
  *
  *	@param	children	child MASConstraints

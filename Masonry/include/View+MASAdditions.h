@@ -108,6 +108,17 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSArray<__kindof MASConstraint *> *)mas_remakeConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *make))block;
 
+/**
+ *  Creates a MASConstraintMaker with the callee view.
+ *  Any constraints defined are collected but NOT installed.
+ *  The returned constraints can be installed later by calling `install` on each constraint individually.
+ *
+ *  @param block scope within which you can build up the constraints which you wish to prepare.
+ *
+ *  @return Array of created (but not installed) MASConstraints
+ */
+- (NSArray<__kindof MASConstraint *> *)mas_prepareConstraints:(void(NS_NOESCAPE ^)(MASConstraintMaker *make))block;
+
 @end
 
 NS_ASSUME_NONNULL_END

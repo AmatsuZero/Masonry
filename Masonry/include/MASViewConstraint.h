@@ -31,6 +31,18 @@ NS_SWIFT_UI_ACTOR
 @property (nonatomic, strong, readonly, nullable) MASViewAttribute *secondViewAttribute;
 
 /**
+ *  The underlying NSLayoutConstraint created by this MASViewConstraint.
+ *  Will be nil before the constraint is installed.
+ */
+@property (nonatomic, weak, readonly, nullable) MASLayoutConstraint *layoutConstraint;
+
+/**
+ *  Whether the underlying NSLayoutConstraint is currently active.
+ *  Returns YES if the constraint has been installed and is active.
+ */
+@property (nonatomic, readonly) BOOL isActive;
+
+/**
  *	initialises the MASViewConstraint with the first part of the equation
  *
  *	@param	firstViewAttribute	view.mas_left, view.mas_width etc.
