@@ -34,7 +34,7 @@ Tests/
 ├── XCTest+Spec.h         #   BDD-style SpecBegin/SpecEnd macros
 Examples.swiftpm/         # Swift Playground app with ObjC & Swift examples
 Package.swift             # SPM manifest (swift-tools-version: 6.0)
-Masonry.podspec           # CocoaPods spec (v1.3.1)
+Masonry.podspec           # CocoaPods spec (v1.3.2)
 ```
 
 ## Build & Test

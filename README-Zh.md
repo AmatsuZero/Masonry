@@ -41,7 +41,7 @@ Masonry 还会自动处理 `translatesAutoresizingMaskIntoConstraints` 和约束
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AmatsuZero/Masonry.git", from: "1.3.1")
+    .package(url: "https://github.com/AmatsuZero/Masonry.git", from: "1.3.2")
 ]
 ```
 
@@ -64,6 +64,23 @@ pod 'Masonry/Swift'
 ```
 github "AmatsuZero/Masonry"
 ```
+
+## 隐私清单
+
+从 v1.3.2 起，Masonry 附带了 Apple **隐私清单**（`PrivacyInfo.xcprivacy`）。该清单声明 Masonry **不**收集任何数据、**不**使用任何需要声明理由的 API、**不**追踪用户。SPM 和 CocoaPods 均会自动集成该清单，无需额外配置。
+
+## Xcode 代码片段
+
+仓库的 `CodeSnippets/` 目录包含了开箱即用的 Xcode 代码片段。将它们复制到 `~/Library/Developer/Xcode/UserData/CodeSnippets/` 即可启用快速自动补全：
+
+| 快捷键 | 语言 | 说明 |
+|--------|------|------|
+| `mas_make` | Objective-C | `mas_makeConstraints` 代码块 |
+| `mas_update` | Objective-C | `mas_updateConstraints` 代码块 |
+| `mas_remake` | Objective-C | `mas_remakeConstraints` 代码块 |
+| `mas_swift_make` | Swift | `mas.makeConstraints` 闭包 |
+| `mas_swift_update` | Swift | `mas.updateConstraints` 闭包 |
+| `mas_swift_remake` | Swift | `mas.remakeConstraints` 闭包 |
 
 ## 使用方法（Objective-C）
 
@@ -212,8 +229,9 @@ make.top.equalTo(label.mas_top).with.priority(600);
 // mas_key 自动设为 "<文件名>:<行号>"，无需手动标注
 make.top.mas_equalTo(superview.mas_top).offset(20);
 
-// 需要显式命名时仍可手动设置
+// 需要显式命名时仍可手动设置（key 接受任意类型，不限于 NSString）
 make.top.equalTo(superview.mas_top).offset(20).key(@"topPin");
+make.width.equalTo(@200).key(@(340954));  // NSNumber 作为 key — 存储为其 description 字符串
 // 或批量标注多个视图：
 MASAttachKeys(titleLabel, avatarView);
 ```

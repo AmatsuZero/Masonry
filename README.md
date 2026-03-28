@@ -41,7 +41,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AmatsuZero/Masonry.git", from: "1.3.1")
+    .package(url: "https://github.com/AmatsuZero/Masonry.git", from: "1.3.2")
 ]
 ```
 
@@ -64,6 +64,23 @@ pod 'Masonry/Swift'
 ```
 github "AmatsuZero/Masonry"
 ```
+
+## Privacy Manifest
+
+Starting with v1.3.2, Masonry ships with an Apple **Privacy Manifest** (`PrivacyInfo.xcprivacy`). The manifest declares that Masonry does **not** collect any data, does **not** use any required-reason APIs, and does **not** track users. Both SPM and CocoaPods integrate the manifest automatically — no extra configuration is needed.
+
+## Xcode Code Snippets
+
+The repository includes ready-to-use Xcode code snippets in the `CodeSnippets/` directory. Copy them to `~/Library/Developer/Xcode/UserData/CodeSnippets/` to enable quick autocompletion:
+
+| Shortcut | Language | Description |
+|----------|----------|-------------|
+| `mas_make` | Objective-C | `mas_makeConstraints` block |
+| `mas_update` | Objective-C | `mas_updateConstraints` block |
+| `mas_remake` | Objective-C | `mas_remakeConstraints` block |
+| `mas_swift_make` | Swift | `mas.makeConstraints` closure |
+| `mas_swift_update` | Swift | `mas.updateConstraints` closure |
+| `mas_swift_remake` | Swift | `mas.remakeConstraints` closure |
 
 ## Usage (Objective-C)
 
@@ -212,8 +229,9 @@ The `mas_equalTo()`, `mas_greaterThanOrEqualTo()`, and `mas_lessThanOrEqualTo()`
 // mas_key is automatically set to "<file>:<line>" — no manual tagging needed
 make.top.mas_equalTo(superview.mas_top).offset(20);
 
-// You can still add an explicit key when needed
+// You can still add an explicit key when needed (accepts any type, not just NSString)
 make.top.equalTo(superview.mas_top).offset(20).key(@"topPin");
+make.width.equalTo(@200).key(@(340954));  // NSNumber as key — stored as its description
 // Or tag multiple views at once:
 MASAttachKeys(titleLabel, avatarView);
 ```

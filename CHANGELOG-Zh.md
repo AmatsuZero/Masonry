@@ -1,5 +1,56 @@
 **[English Changelog](CHANGELOG.md)**
 
+v1.3.2
+======
+
+#### - 新增 Apple 隐私清单（PrivacyInfo.xcprivacy）
+
+添加 `PrivacyInfo.xcprivacy` 以符合 Apple 隐私清单要求（WWDC23 引入）。该清单声明 Masonry 不进行用户追踪、不收集用户数据、不访问任何隐私敏感 API。SPM（`Package.swift`）和 CocoaPods（`Masonry.podspec`）现在均会自动打包此文件。
+
+#### - 新增 Swift Xcode 代码片段
+
+在 `CodeSnippets/` 目录中新增三个 Swift DSL 的 Xcode 代码片段：
+
+| 补全前缀 | 说明 |
+|---|---|
+| `mas_swift_make` | `view.mas.makeConstraints { make in … }` |
+| `mas_swift_remake` | `view.mas.remakeConstraints { make in … }` |
+| `mas_swift_update` | `view.mas.updateConstraints { make in … }` |
+
+将它们复制到 `~/Library/Developer/Xcode/UserData/CodeSnippets/` 即可在 Xcode 中启用自动补全。
+
+#### - 升级 GitHub Issue 模板
+
+将旧的 `ISSUE_TEMPLATE.md` 替换为结构化的 GitHub YAML 表单模板（`bug_report.yml` 和 `feature_request.yml`），提供平台、版本、集成方式、复现步骤等引导式填写字段。
+
+#### - 清理遗留文件
+
+移除了 SPM 迁移前遗留的过时文件：
+* `Masonry/Info.plist` — 不再需要；SPM 会自动生成 bundle 信息。
+* `Tests/MasonryTestsLoader/` — 旧的测试宿主应用，已被 SPM 测试目标替代。
+* `Tests/GcovTestObserver.m` — 已弃用的 gcov 代码覆盖率集成。
+* `Tests/MasonryTests-Info.plist` — 旧的测试 bundle plist。
+* `Tests/NSObject+MASSubscriptSupport.h` — 未使用的测试辅助文件。
+* 移除了 podspec 中多余的 `TARGET_OS_IOS` / `TARGET_OS_TV` PCH 宏定义。
+* 清理了 `.gitignore` 中的重复条目。
+
+#### - `key` 方法签名变更（API 变更）
+
+`MASConstraint` 的 `.key()` 方法参数类型从 `NSString *` 放宽为 `id _Nullable`，现在可以传入任意对象（如 `NSNumber`、自定义对象等）作为约束的调试标识，内部通过 `-description` 转换为字符串。传入 `nil` 时安全处理不会崩溃。
+
+```objc
+// 之前：仅接受 NSString
+make.top.equalTo(superview).key(@"topPin");
+
+// 现在：接受任意对象
+make.top.equalTo(superview).key(@"topPin");       // NSString — 行为不变
+make.top.equalTo(superview).key(@(340954));        // NSNumber — mas_key 为 "340954"
+make.top.equalTo(superview).key(someObject);       // 任意对象 — 使用 -description
+```
+
+Swift 端 `MASSwiftConstraintProxy` 的 `.key(_:)` 方法同步简化，直接透传 `Any?` 给 ObjC 层处理，`labeled(_:)` 方法也统一复用 `key(_:)` 实现。新增了对应的单元测试覆盖 `NSNumber`、`NSString`、`nil` 及多次覆盖设置等场景。
+
+
 v1.3.1
 ======
 

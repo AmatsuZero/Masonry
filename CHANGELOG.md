@@ -1,5 +1,54 @@
 **[中文变更记录](CHANGELOG-Zh.md)**
 
+v1.3.2
+======
+
+#### - Added Apple Privacy Manifest (PrivacyInfo.xcprivacy)
+
+Added `PrivacyInfo.xcprivacy` to comply with Apple's privacy manifest requirements (introduced at WWDC23). The manifest declares that Masonry does not perform tracking, does not collect user data, and does not access any privacy-sensitive APIs. Both SPM (`Package.swift`) and CocoaPods (`Masonry.podspec`) now bundle this file automatically.
+
+#### - Added Swift Code Snippets for Xcode
+
+Three new Xcode code snippets are included in the `CodeSnippets/` directory for the Swift DSL:
+
+| Completion Prefix | Description |
+|---|---|
+| `mas_swift_make` | `view.mas.makeConstraints { make in … }` |
+| `mas_swift_remake` | `view.mas.remakeConstraints { make in … }` |
+| `mas_swift_update` | `view.mas.updateConstraints { make in … }` |
+
+Copy them to `~/Library/Developer/Xcode/UserData/CodeSnippets/` to enable auto-completion in Xcode.
+
+#### - Modernised GitHub Issue Templates
+
+Replaced the legacy `ISSUE_TEMPLATE.md` with structured GitHub YAML form templates (`bug_report.yml` and `feature_request.yml`), providing guided fields for platform, version, integration method, and reproduction steps.
+
+#### - Changed `key` method signature from `NSString *` to `id`
+
+The `.key()` method on `MASConstraint` now accepts `id _Nullable` instead of `NSString *`. This allows passing any object type (e.g. `NSNumber`, `NSURL`, custom objects) as a constraint debug key — the value is converted via `-description`. Passing `nil` is also safe and simply clears the key. The Swift-side `.key(_:)` method on `MASSwiftConstraintProxy` has been simplified accordingly.
+
+```objc
+// Before (1.3.1): only NSString
+make.top.equalTo(superview).key(@"topPin");
+
+// After (1.3.2): any object, including NSNumber
+make.top.equalTo(superview).key(@"topPin");      // still works
+make.top.equalTo(superview).key(@(340954));       // now also works — mas_key becomes "340954"
+make.top.equalTo(superview).key(nil);             // safe, clears the key
+```
+
+#### - Cleaned up legacy files
+
+Removed obsolete files that were left over from the pre-SPM era:
+* `Masonry/Info.plist` — no longer needed; SPM generates bundle info automatically.
+* `Tests/MasonryTestsLoader/` — legacy test host app, replaced by SPM test targets.
+* `Tests/GcovTestObserver.m` — deprecated gcov integration for code coverage.
+* `Tests/MasonryTests-Info.plist` — legacy test bundle plist.
+* `Tests/NSObject+MASSubscriptSupport.h` — unused test helper.
+* Removed redundant `TARGET_OS_IOS` / `TARGET_OS_TV` PCH macro definitions from the podspec.
+* Deduplicated `.gitignore` entries.
+
+
 v1.3.1
 ======
 
