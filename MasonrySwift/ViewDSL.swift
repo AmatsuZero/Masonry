@@ -51,8 +51,8 @@ public struct MASViewDSL {
     /// - Parameter closure: 约束构建闭包
     /// - Returns: 已安装的约束数组
     @discardableResult
-    public func makeConstraints(_ closure: (_ make: MASSwiftMakerProxy) -> Void) -> [MASConstraint] {
-        view.mas_makeConstraints { closure(MASSwiftMakerProxy($0)) }
+    public func makeConstraints(_ closure: (_ make: MASConstraintMaker) -> Void) -> [MASConstraint] {
+        view.mas_makeConstraints { closure($0) }
     }
 
     /// 更新已有约束（存在则更新，不存在则创建）
@@ -61,8 +61,8 @@ public struct MASViewDSL {
     /// - Parameter closure: 约束构建闭包
     /// - Returns: 已创建/更新的约束数组
     @discardableResult
-    public func updateConstraints(_ closure: (_ make: MASSwiftMakerProxy) -> Void) -> [MASConstraint] {
-        view.mas_updateConstraints { closure(MASSwiftMakerProxy($0)) }
+    public func updateConstraints(_ closure: (_ make: MASConstraintMaker) -> Void) -> [MASConstraint] {
+        view.mas_updateConstraints { closure($0) }
     }
 
     /// 移除所有已有约束后重新创建
@@ -71,8 +71,8 @@ public struct MASViewDSL {
     /// - Parameter closure: 约束构建闭包
     /// - Returns: 已创建的约束数组
     @discardableResult
-    public func remakeConstraints(_ closure: (_ make: MASSwiftMakerProxy) -> Void) -> [MASConstraint] {
-        view.mas_remakeConstraints { closure(MASSwiftMakerProxy($0)) }
+    public func remakeConstraints(_ closure: (_ make: MASConstraintMaker) -> Void) -> [MASConstraint] {
+        view.mas_remakeConstraints { closure($0) }
     }
 
     /// 移除当前视图上由 Masonry 安装的所有约束
@@ -99,9 +99,9 @@ public struct MASViewDSL {
     ///
     /// - Parameter closure: 约束构建闭包
     /// - Returns: 已创建但未安装的约束数组
-    public func prepareConstraints(_ closure: (_ make: MASSwiftMakerProxy) -> Void) -> [MASConstraint] {
+    public func prepareConstraints(_ closure: (_ make: MASConstraintMaker) -> Void) -> [MASConstraint] {
         view.mas_prepareConstraints { maker in
-            closure(MASSwiftMakerProxy(maker))
+            closure(maker)
         }
     }
 
@@ -388,8 +388,8 @@ extension Array where Element: MASNativeView {
     /// - Returns: 所有已安装的约束数组
     @MainActor
     @discardableResult
-    public func mas_makeConstraints(_ closure: (_ make: MASSwiftMakerProxy) -> Void) -> [MASConstraint] {
-        (self as NSArray).mas_makeConstraints { closure(MASSwiftMakerProxy($0)) }
+    public func mas_makeConstraints(_ closure: (_ make: MASConstraintMaker) -> Void) -> [MASConstraint] {
+        (self as NSArray).mas_makeConstraints { closure($0) }
     }
 
     /// 批量更新约束
@@ -398,8 +398,8 @@ extension Array where Element: MASNativeView {
     /// - Returns: 所有已创建/更新的约束数组
     @MainActor
     @discardableResult
-    public func mas_updateConstraints(_ closure: (_ make: MASSwiftMakerProxy) -> Void) -> [MASConstraint] {
-        (self as NSArray).mas_updateConstraints { closure(MASSwiftMakerProxy($0)) }
+    public func mas_updateConstraints(_ closure: (_ make: MASConstraintMaker) -> Void) -> [MASConstraint] {
+        (self as NSArray).mas_updateConstraints { closure($0) }
     }
 
     /// 批量移除所有约束后重新创建
@@ -408,9 +408,8 @@ extension Array where Element: MASNativeView {
     /// - Returns: 所有已创建的约束数组
     @MainActor
     @discardableResult
-    public func mas_remakeConstraints(_ closure: (_ make: MASSwiftMakerProxy) -> Void) -> [MASConstraint] {
-        (self as NSArray).mas_remakeConstraints { closure(MASSwiftMakerProxy($0))
-        }
+    public func mas_remakeConstraints(_ closure: (_ make: MASConstraintMaker) -> Void) -> [MASConstraint] {
+        (self as NSArray).mas_remakeConstraints { closure($0) }
     }
 
     /// 等间距分布视图

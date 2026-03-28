@@ -2,7 +2,7 @@
 //  ConstraintProxy.swift
 //  Masonry
 //
-//  MASSwiftConstraintProxy：为 MASConstraint 提供 Swift 友好的链式调用代理
+//  MASConstraint Extension：为 MASConstraint 提供 Swift 友好的链式调用方法
 //
 
 #if canImport(UIKit)
@@ -15,23 +15,9 @@ import AppKit
 import Masonry
 #endif
 
-// MARK: - MASSwiftConstraintProxy（约束代理，提供 Swift 友好的值包装）
+// MARK: - MASConstraint Extension（Swift 友好的链式调用）
 
-/// 为 `MASConstraint` 提供 Swift 友好的链式调用代理
-///
-/// 此代理解决了 ObjC 宏（如 `mas_equalTo`、`mas_offset` 等）在 Swift 中不可用的问题，
-/// 通过泛型方法自动将 Swift 值类型包装为 `NSValue`/`NSNumber`。
-@MainActor
-public final class MASSwiftConstraintProxy {
-
-    /// 内部持有的 ObjC 约束对象
-    public let constraint: MASConstraint
-
-    /// 以 ObjC 约束对象初始化
-    /// - Parameter constraint: 原始 MASConstraint
-    public init(_ constraint: MASConstraint) {
-        self.constraint = constraint
-    }
+extension MASConstraint {
 
     // MARK: - 关系设置（替代 mas_equalTo / mas_greaterThanOrEqualTo / mas_lessThanOrEqualTo 宏）
 
@@ -43,12 +29,13 @@ public final class MASSwiftConstraintProxy {
     ///   `MASNativeView`、`ViewAttribute` 或其他数值类型
     /// - Parameter file: 调用处文件名（自动捕获，无需手动传入）
     /// - Parameter line: 调用处行号（自动捕获，无需手动传入）
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
     public func equalTo(_ value: Any?,
                         _ file: String = #fileID,
-                        _ line: UInt = #line) -> MASSwiftConstraintProxy {
-        constraint.equalToWithLocation()(MASSwiftConstraintProxy.boxValue(value, file: file, line: line), file, line)
+                        _ line: UInt = #line) -> MASConstraint {
+        self.equalToWithLocation()(MASConstraint.boxValue(value, file: file, line: line), file, line)
         return self
     }
 
@@ -59,12 +46,13 @@ public final class MASSwiftConstraintProxy {
     /// - Parameter value: 约束目标
     /// - Parameter file: 调用处文件名（自动捕获，无需手动传入）
     /// - Parameter line: 调用处行号（自动捕获，无需手动传入）
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
     public func greaterThanOrEqualTo(_ value: Any?,
                                      _ file: String = #fileID,
-                                     _ line: UInt = #line) -> MASSwiftConstraintProxy {
-        constraint.greaterThanOrEqualToWithLocation()(MASSwiftConstraintProxy.boxValue(value, file: file, line: line), file, line)
+                                     _ line: UInt = #line) -> MASConstraint {
+        self.greaterThanOrEqualToWithLocation()(MASConstraint.boxValue(value, file: file, line: line), file, line)
         return self
     }
 
@@ -75,12 +63,13 @@ public final class MASSwiftConstraintProxy {
     /// - Parameter value: 约束目标
     /// - Parameter file: 调用处文件名（自动捕获，无需手动传入）
     /// - Parameter line: 调用处行号（自动捕获，无需手动传入）
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
     public func lessThanOrEqualTo(_ value: Any?,
                                   _ file: String = #fileID,
-                                  _ line: UInt = #line) -> MASSwiftConstraintProxy {
-        constraint.lessThanOrEqualToWithLocation()(MASSwiftConstraintProxy.boxValue(value, file: file, line: line), file, line)
+                                  _ line: UInt = #line) -> MASConstraint {
+        self.lessThanOrEqualToWithLocation()(MASConstraint.boxValue(value, file: file, line: line), file, line)
         return self
     }
 
@@ -89,46 +78,35 @@ public final class MASSwiftConstraintProxy {
     /// 替代写法 `.equalTo(superview)` 或 `.equalTo(superview.mas_top)` 等，
     /// 直接与父视图的同名属性建立等值约束。
     /// 视图必须已加入视图层级（有父视图），否则触发断言。
-    /// - Returns: 当前代理对象，支持链式调用
-    @discardableResult
-    public func equalToSuperview() -> MASSwiftConstraintProxy {
-        constraint.equalToSuperview()
-        return self
-    }
+    /// - Returns: 当前约束对象，支持链式调用
+    ///
+    /// - Note: ObjC 已有同名方法 `equalToSuperview`，但返回 `MASConstraint *`。
+    ///   此处 Swift Extension 方法与 ObjC 方法签名完全一致，Swift 会优先选择 Extension 版本。
+    ///   由于 ObjC 版本已经完成了实际工作，这里无需额外操作。
 
     /// 设置约束关系为"大于等于父视图的对应属性"
     ///
     /// 对齐 SnapKit 的 `greaterThanOrEqualToSuperview()`。
     /// 直接映射到 Masonry 底层的 `greaterThanOrEqualToSuperview` 方法。
     /// 视图必须已加入视图层级（有父视图），否则触发断言。
-    /// - Returns: 当前代理对象，支持链式调用
-    @discardableResult
-    public func greaterThanOrEqualToSuperview() -> MASSwiftConstraintProxy {
-        constraint.greaterThanOrEqualToSuperview()
-        return self
-    }
 
     /// 设置约束关系为"小于等于父视图的对应属性"
     ///
     /// 对齐 SnapKit 的 `lessThanOrEqualToSuperview()`。
     /// 直接映射到 Masonry 底层的 `lessThanOrEqualToSuperview` 方法。
     /// 视图必须已加入视图层级（有父视图），否则触发断言。
-    /// - Returns: 当前代理对象，支持链式调用
-    @discardableResult
-    public func lessThanOrEqualToSuperview() -> MASSwiftConstraintProxy {
-        constraint.lessThanOrEqualToSuperview()
-        return self
-    }
 
     // MARK: - 偏移量设置（替代 mas_offset 宏）
 
     /// 设置约束常量偏移（CGFloat）
     ///
+    /// 与 ObjC 的无参 `offset() -> (CGFloat) -> MASConstraint` 构成合法重载。
     /// - Parameter value: 偏移量数值
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func offset(_ value: CGFloat) -> MASSwiftConstraintProxy {
-        constraint.offset()(value)
+    public func offset(_ value: CGFloat) -> MASConstraint {
+        self.offset()(value)
         return self
     }
 
@@ -137,54 +115,59 @@ public final class MASSwiftConstraintProxy {
     /// 支持 `CGFloat`、`CGPoint`、`CGSize`、`MASNativeEdgeInsets` 等类型，
     /// 自动包装为 `NSValue`。支持传入可选类型，内部会自动解包。
     /// - Parameter value: 偏移量
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func valueOffset(_ value: Any?) -> MASSwiftConstraintProxy {
-        guard let boxed = MASSwiftConstraintProxy.boxValue(value) as? NSValue else {
+    public func valueOffset(_ value: Any?) -> MASConstraint {
+        guard let boxed = MASConstraint.boxValue(value) as? NSValue else {
             assertionFailure("[Masonry] valueOffset: 传入的值无法转换为 NSValue，请检查参数类型")
             return self
         }
-        constraint.valueOffset()(boxed)
+        self.valueOffset()(boxed)
         return self
     }
 
     /// 设置边距偏移（MASEdgeInsets）
     ///
     /// - Parameter insets: 边距值
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func insets(_ insets: MASNativeEdgeInsets) -> MASSwiftConstraintProxy {
-        constraint.insets()(insets)
+    public func insets(_ insets: MASNativeEdgeInsets) -> MASConstraint {
+        self.insets()(insets)
         return self
     }
 
     /// 设置统一的边距偏移
     ///
     /// - Parameter value: 统一的内边距值
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func inset(_ value: CGFloat) -> MASSwiftConstraintProxy {
-        constraint.inset()(value)
+    public func inset(_ value: CGFloat) -> MASConstraint {
+        self.inset()(value)
         return self
     }
 
     /// 设置尺寸偏移（CGSize）
     ///
     /// - Parameter offset: 尺寸偏移量
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func sizeOffset(_ offset: CGSize) -> MASSwiftConstraintProxy {
-        constraint.sizeOffset()(offset)
+    public func sizeOffset(_ offset: CGSize) -> MASConstraint {
+        self.sizeOffset()(offset)
         return self
     }
 
     /// 设置中心偏移（CGPoint）
     ///
     /// - Parameter offset: 中心点偏移量
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func centerOffset(_ offset: CGPoint) -> MASSwiftConstraintProxy {
-        constraint.centerOffset()(offset)
+    public func centerOffset(_ offset: CGPoint) -> MASConstraint {
+        self.centerOffset()(offset)
         return self
     }
 
@@ -192,38 +175,64 @@ public final class MASSwiftConstraintProxy {
 
     /// 设置约束优先级
     ///
+    /// 与 ObjC 的无参 `priority() -> (MASLayoutPriority) -> MASConstraint` 构成合法重载。
     /// - Parameter value: 优先级值（0~1000）
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func priority(_ value: Float) -> MASSwiftConstraintProxy {
-        constraint.priority()(MASLayoutPriority(rawValue: value))
+    public func priority(_ value: Float) -> MASConstraint {
+        self.priority()(MASLayoutPriority(rawValue: value))
         return self
     }
 
     /// 设置约束为低优先级（`UILayoutPriority.defaultLow`）
     ///
-    /// - Returns: 当前代理对象，支持链式调用
+    /// ObjC 原始方法已通过 `NS_REFINED_FOR_SWIFT` 重命名为 `__priorityLow`。
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func priorityLow() -> MASSwiftConstraintProxy {
-        constraint.priorityLow()()
+    public func priorityLow() -> MASConstraint {
+        self.__priorityLow()()
         return self
     }
 
     /// 设置约束为中优先级（500）
     ///
-    /// - Returns: 当前代理对象，支持链式调用
+    /// ObjC 原始方法已通过 `NS_REFINED_FOR_SWIFT` 重命名为 `__priorityMedium`。
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func priorityMedium() -> MASSwiftConstraintProxy {
-        constraint.priorityMedium()()
+    public func priorityMedium() -> MASConstraint {
+        self.__priorityMedium()()
         return self
     }
 
     /// 设置约束为高优先级（`UILayoutPriority.defaultHigh`）
     ///
-    /// - Returns: 当前代理对象，支持链式调用
+    /// ObjC 原始方法已通过 `NS_REFINED_FOR_SWIFT` 重命名为 `__priorityHigh`。
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func priorityHigh() -> MASSwiftConstraintProxy {
-        constraint.priorityHigh()()
+    public func priorityHigh() -> MASConstraint {
+        self.__priorityHigh()()
+        return self
+    }
+
+    /// 使用 `MASConstraintPriority` 枚举设置约束优先级
+    ///
+    /// 对齐 SnapKit 的 `.priority(.high)` 风格。
+    ///
+    /// ```swift
+    /// make.width.equalTo(100).priority(.high)
+    /// make.height.equalTo(44).priority(.medium)
+    /// ```
+    ///
+    /// - Parameter priority: 优先级枚举值
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
+    @discardableResult
+    public func priority(_ priority: MASConstraintPriority) -> MASConstraint {
+        self.priority()(MASLayoutPriority(rawValue: priority.value))
         return self
     }
 
@@ -232,20 +241,22 @@ public final class MASSwiftConstraintProxy {
     /// 设置约束乘数
     ///
     /// - Parameter value: 乘数值
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func multipliedBy(_ value: CGFloat) -> MASSwiftConstraintProxy {
-        constraint.multipliedBy()(value)
+    public func multipliedBy(_ value: CGFloat) -> MASConstraint {
+        self.multipliedBy()(value)
         return self
     }
 
     /// 设置约束除数（内部转换为 1.0/value 的乘数）
     ///
     /// - Parameter value: 除数值
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func dividedBy(_ value: CGFloat) -> MASSwiftConstraintProxy {
-        constraint.dividedBy()(value)
+    public func dividedBy(_ value: CGFloat) -> MASConstraint {
+        self.dividedBy()(value)
         return self
     }
 
@@ -254,33 +265,29 @@ public final class MASSwiftConstraintProxy {
     /// 设置约束的调试标识键
     ///
     /// - Parameter value: 用于调试的键值
-    /// - Returns: 当前代理对象，支持链式调用
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
     @discardableResult
-    public func key(_ value: Any?) -> MASSwiftConstraintProxy {
-        constraint.key()(value)
+    public func key(_ value: Any?) -> MASConstraint {
+        self.key()(value)
         return self
     }
 
-    // MARK: - 安装/卸载
-
-    /// 激活约束
-    public func activate() {
-        constraint.activate()
-    }
-
-    /// 停用约束
-    public func deactivate() {
-        constraint.deactivate()
-    }
-
-    /// 安装约束
-    public func install() {
-        constraint.install()
-    }
-
-    /// 卸载约束
-    public func uninstall() {
-        constraint.uninstall()
+    /// 设置约束的调试标签
+    ///
+    /// 对齐 SnapKit 的 `labeled(_:)` 方法，用于在调试约束冲突时提供可读标识。
+    /// 内部映射到 Masonry 的 `key()` 方法。
+    ///
+    /// ```swift
+    /// make.top.equalToSuperview().labeled("topConstraint")
+    /// ```
+    ///
+    /// - Parameter label: 调试标签字符串
+    /// - Returns: 当前约束对象，支持链式调用
+    @MainActor
+    @discardableResult
+    public func labeled(_ label: String) -> MASConstraint {
+        key(label)
     }
 
     // MARK: - 底层约束访问（对齐 SnapKit Constraint.layoutConstraints / isActive）
@@ -291,14 +298,9 @@ public final class MASSwiftConstraintProxy {
     /// - 对于 `MASViewConstraint`：返回包含单个 `layoutConstraint` 的数组（如已安装）
     /// - 对于 `MASCompositeConstraint`：递归收集所有子约束的底层 NSLayoutConstraint
     /// - 未安装的约束返回空数组
-    ///
-    /// ```swift
-    /// let proxy = make.top.equalToSuperview()
-    /// // 约束安装后
-    /// let nsConstraints = proxy.layoutConstraints
-    /// ```
+    @MainActor
     public var layoutConstraints: [NSLayoutConstraint] {
-        return Self.collectLayoutConstraints(from: constraint)
+        return MASConstraint.collectLayoutConstraints(from: self)
     }
 
     /// 约束是否处于激活状态
@@ -307,20 +309,20 @@ public final class MASSwiftConstraintProxy {
     /// - 对于 `MASViewConstraint`：直接返回底层 `isActive` 属性
     /// - 对于 `MASCompositeConstraint`：所有子约束均激活时返回 `true`
     /// - 未安装的约束返回 `false`
+    @MainActor
     public var isActive: Bool {
-        if let viewConstraint = constraint as? MASViewConstraint {
-            return viewConstraint.isActive
+        if let viewConstraint = self as? MASViewConstraint {
+            return viewConstraint.layoutConstraint?.isActive ?? false
         }
-        if let composite = constraint as? CompositeConstraint {
+        if let composite = self as? CompositeConstraint {
             let children = composite.childConstraints as? [MASConstraint] ?? []
-            return children.allSatisfy { child in
-                MASSwiftConstraintProxy(child).isActive
-            }
+            return children.allSatisfy { $0.isActive }
         }
         return false
     }
 
     /// 递归收集 MASConstraint 树中所有底层 NSLayoutConstraint
+    @MainActor
     private static func collectLayoutConstraints(from constraint: MASConstraint) -> [NSLayoutConstraint] {
         if let viewConstraint = constraint as? MASViewConstraint {
             if let lc = viewConstraint.layoutConstraint {
@@ -335,147 +337,52 @@ public final class MASSwiftConstraintProxy {
         return []
     }
 
-    // MARK: - 属性链（链式获取子约束属性）
-    //
-    // 注意：所有属性均提供空 setter，以支持 += / -= 复合赋值运算符。
-    // 因为 MASConstraint 是引用类型，offset 等方法已直接修改底层对象，
-    // setter 无需执行额外操作。
+    // MARK: - 外部更新方法（对齐 SnapKit Constraint.updateOffset / updateInsets）
 
-    /// 左边距约束
-    public var left: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.left()) }
-        set { /* 支持 += / -= 运算符 */ }
+    /// 在约束块外部更新约束的偏移量
+    ///
+    /// 对齐 SnapKit 的 `Constraint.updateOffset(_:)` 方法。
+    /// 可在 `makeConstraints` / `updateConstraints` 块外部直接修改已安装约束的常量值。
+    ///
+    /// - Parameter offset: 新的偏移量
+    @MainActor
+    public func updateOffset(_ offset: CGFloat) {
+        self.setOffset(offset)
     }
 
-    /// 顶部约束
-    public var top: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.top()) }
-        set { /* 支持 += / -= 运算符 */ }
+    /// 在约束块外部更新约束的边距
+    ///
+    /// 对齐 SnapKit 的 `Constraint.updateInsets(_:)` 方法。
+    ///
+    /// - Parameter insets: 新的边距值
+    @MainActor
+    public func updateInsets(_ insets: MASNativeEdgeInsets) {
+        self.setInsets(insets)
     }
 
-    /// 右边距约束
-    public var right: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.right()) }
-        set { /* 支持 += / -= 运算符 */ }
+    /// 在约束块外部更新约束的统一内边距
+    ///
+    /// - Parameter inset: 新的统一内边距值
+    @MainActor
+    public func updateInset(_ inset: CGFloat) {
+        self.setInset(inset)
     }
 
-    /// 底部约束
-    public var bottom: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.bottom()) }
-        set { /* 支持 += / -= 运算符 */ }
+    /// 在约束块外部更新约束的中心偏移
+    ///
+    /// - Parameter centerOffset: 新的中心偏移量
+    @MainActor
+    public func updateCenterOffset(_ centerOffset: CGPoint) {
+        self.setCenterOffset(centerOffset)
     }
 
-    /// 前导约束
-    public var leading: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.leading()) }
-        set { /* 支持 += / -= 运算符 */ }
+    /// 在约束块外部更新约束的尺寸偏移
+    ///
+    /// - Parameter sizeOffset: 新的尺寸偏移量
+    @MainActor
+    public func updateSizeOffset(_ sizeOffset: CGSize) {
+        self.setSizeOffset(sizeOffset)
     }
-
-    /// 尾随约束
-    public var trailing: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.trailing()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 宽度约束
-    public var width: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.width()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 高度约束
-    public var height: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.height()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 水平中心约束
-    public var centerX: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.centerX()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 垂直中心约束
-    public var centerY: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.centerY()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 基线约束
-    public var baseline: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.baseline()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 首行基线约束
-    public var firstBaseline: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.firstBaseline()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 末行基线约束
-    public var lastBaseline: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.lastBaseline()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    #if canImport(UIKit)
-    /// 左边距（基于 Margin）
-    public var leftMargin: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.leftMargin()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 右边距（基于 Margin）
-    public var rightMargin: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.rightMargin()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 顶部边距（基于 Margin）
-    public var topMargin: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.topMargin()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 底部边距（基于 Margin）
-    public var bottomMargin: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.bottomMargin()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 前导边距（基于 Margin）
-    public var leadingMargin: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.leadingMargin()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 尾随边距（基于 Margin）
-    public var trailingMargin: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.trailingMargin()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 水平中心（基于 Margin）
-    public var centerXWithinMargins: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.centerXWithinMargins()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-
-    /// 垂直中心（基于 Margin）
-    public var centerYWithinMargins: MASSwiftConstraintProxy {
-        get { MASSwiftConstraintProxy(constraint.centerYWithinMargins()) }
-        set { /* 支持 += / -= 运算符 */ }
-    }
-    #endif
-
-    // MARK: - 语义链
-
-    /// 语义属性，不影响约束，提升可读性
-    public var with: MASSwiftConstraintProxy { self }
-
-    /// 语义属性，不影响约束，提升可读性
-    public var and: MASSwiftConstraintProxy { self }
 
     // MARK: - 值包装（内部工具方法）
 
@@ -555,95 +462,6 @@ public final class MASSwiftConstraintProxy {
         }
     }
 
-    // MARK: - 调试标签（对齐 SnapKit labeled）
-
-    /// 设置约束的调试标签
-    ///
-    /// 对齐 SnapKit 的 `labeled(_:)` 方法，用于在调试约束冲突时提供可读标识。
-    /// 内部映射到 Masonry 的 `key()` 方法。
-    ///
-    /// ```swift
-    /// make.top.equalToSuperview().labeled("topConstraint")
-    /// ```
-    ///
-    /// - Parameter label: 调试标签字符串
-    /// - Returns: 当前代理对象，支持链式调用
-    @discardableResult
-    public func labeled(_ label: String) -> MASSwiftConstraintProxy {
-        key(label)
-    }
-
-    // MARK: - 外部更新方法（对齐 SnapKit Constraint.updateOffset / updateInsets）
-
-    /// 在约束块外部更新约束的偏移量
-    ///
-    /// 对齐 SnapKit 的 `Constraint.updateOffset(_:)` 方法。
-    /// 可在 `makeConstraints` / `updateConstraints` 块外部直接修改已安装约束的常量值。
-    ///
-    /// ```swift
-    /// // 保存约束引用
-    /// var topConstraint: MASSwiftConstraintProxy!
-    /// view.mas.makeConstraints { make in
-    ///     topConstraint = make.top.equalToSuperview().offset(20)
-    /// }
-    /// // 稍后更新
-    /// topConstraint.updateOffset(40)
-    /// ```
-    ///
-    /// - Parameter offset: 新的偏移量
-    public func updateOffset(_ offset: CGFloat) {
-        constraint.setOffset(offset)
-    }
-
-    /// 在约束块外部更新约束的边距
-    ///
-    /// 对齐 SnapKit 的 `Constraint.updateInsets(_:)` 方法。
-    ///
-    /// - Parameter insets: 新的边距值
-    public func updateInsets(_ insets: MASNativeEdgeInsets) {
-        constraint.setInsets(insets)
-    }
-
-    /// 在约束块外部更新约束的统一内边距
-    ///
-    /// - Parameter inset: 新的统一内边距值
-    public func updateInset(_ inset: CGFloat) {
-        constraint.setInset(inset)
-    }
-
-    /// 在约束块外部更新约束的中心偏移
-    ///
-    /// - Parameter centerOffset: 新的中心偏移量
-    public func updateCenterOffset(_ centerOffset: CGPoint) {
-        constraint.setCenterOffset(centerOffset)
-    }
-
-    /// 在约束块外部更新约束的尺寸偏移
-    ///
-    /// - Parameter sizeOffset: 新的尺寸偏移量
-    public func updateSizeOffset(_ sizeOffset: CGSize) {
-        constraint.setSizeOffset(sizeOffset)
-    }
-
-    // MARK: - 优先级（MASConstraintPriority 枚举支持）
-
-    /// 使用 `MASConstraintPriority` 枚举设置约束优先级
-    ///
-    /// 对齐 SnapKit 的 `.priority(.high)` 风格。
-    ///
-    /// ```swift
-    /// make.width.equalTo(100).priority(.high)
-    /// make.height.equalTo(44).priority(.medium)
-    /// ```
-    ///
-    /// - Parameter priority: 优先级枚举值
-    /// - Returns: 当前代理对象，支持链式调用
-    @discardableResult
-    public func priority(_ priority: MASConstraintPriority) -> MASSwiftConstraintProxy {
-        constraint.priority()(MASLayoutPriority(rawValue: priority.value))
-        return self
-    }
-
     #if os(macOS)
     // MARK: - macOS 动画代理
 
@@ -653,8 +471,155 @@ public final class MASSwiftConstraintProxy {
     /// 通过 NSAnimatablePropertyContainer 的 animator 代理修改约束常量。
     ///
     /// > 限制：仅在 macOS 上可用，iOS/tvOS 不支持。
-    public var animator: MASSwiftConstraintProxy {
-        MASSwiftConstraintProxy(constraint.animator)
+    @MainActor
+    public var mas_animator: MASConstraint {
+        self.animator
     }
     #endif
+
+    // MARK: - 属性链（将 ObjC 方法包装为 Swift 计算属性，支持 make.top.left.right 语法）
+    //
+    // ObjC 中 left、top 等是方法（返回 MASConstraint *），在 Swift 中桥接为 func left() -> MASConstraint。
+    // 为了支持 make.top.left.right 的属性链语法，这里将它们包装为计算属性。
+    // Swift 编译器在 constraint.left 时会优先选择属性（无需括号），而非方法。
+
+    /// 左边距约束（属性链）
+    @MainActor
+    public var left: MASConstraint {
+        get { self.left() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 顶部约束（属性链）
+    @MainActor
+    public var top: MASConstraint {
+        get { self.top() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 右边距约束（属性链）
+    @MainActor
+    public var right: MASConstraint {
+        get { self.right() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 底部约束（属性链）
+    @MainActor
+    public var bottom: MASConstraint {
+        get { self.bottom() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 前导约束（属性链）
+    @MainActor
+    public var leading: MASConstraint {
+        get { self.leading() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 尾随约束（属性链）
+    @MainActor
+    public var trailing: MASConstraint {
+        get { self.trailing() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 宽度约束（属性链）
+    @MainActor
+    public var width: MASConstraint {
+        get { self.width() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 高度约束（属性链）
+    @MainActor
+    public var height: MASConstraint {
+        get { self.height() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 水平中心约束（属性链）
+    @MainActor
+    public var centerX: MASConstraint {
+        get { self.centerX() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 垂直中心约束（属性链）
+    @MainActor
+    public var centerY: MASConstraint {
+        get { self.centerY() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 基线约束（属性链）
+    @MainActor
+    public var baseline: MASConstraint {
+        get { self.baseline() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 首行基线约束（属性链）
+    @MainActor
+    public var firstBaseline: MASConstraint {
+        get { self.firstBaseline() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 末行基线约束（属性链）
+    @MainActor
+    public var lastBaseline: MASConstraint {
+        get { self.lastBaseline() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+
+    #if canImport(UIKit)
+    /// 左边距（基于 Margin，属性链）
+    @MainActor
+    public var leftMargin: MASConstraint {
+        get { self.leftMargin() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 右边距（基于 Margin，属性链）
+    @MainActor
+    public var rightMargin: MASConstraint {
+        get { self.rightMargin() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 顶部边距（基于 Margin，属性链）
+    @MainActor
+    public var topMargin: MASConstraint {
+        get { self.topMargin() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 底部边距（基于 Margin，属性链）
+    @MainActor
+    public var bottomMargin: MASConstraint {
+        get { self.bottomMargin() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 前导边距（基于 Margin，属性链）
+    @MainActor
+    public var leadingMargin: MASConstraint {
+        get { self.leadingMargin() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 尾随边距（基于 Margin，属性链）
+    @MainActor
+    public var trailingMargin: MASConstraint {
+        get { self.trailingMargin() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 水平中心（基于 Margin，属性链）
+    @MainActor
+    public var centerXWithinMargins: MASConstraint {
+        get { self.centerXWithinMargins() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    /// 垂直中心（基于 Margin，属性链）
+    @MainActor
+    public var centerYWithinMargins: MASConstraint {
+        get { self.centerYWithinMargins() }
+        set { /* 支持 += / -= 运算符 */ }
+    }
+    #endif
+
+    // MARK: - 语义链
+
+    /// 语义属性，不影响约束，提升可读性
+    @MainActor
+    public var mas_with: MASConstraint { self.with() }
+
+    /// 语义属性，不影响约束，提升可读性
+    @MainActor
+    public var mas_and: MASConstraint { self.and() }
 }

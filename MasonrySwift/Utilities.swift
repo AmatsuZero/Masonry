@@ -63,11 +63,11 @@ extension UIView {
 
     /// 创建并安装约束（对应 ObjC `mas_makeConstraints:`）
     ///
-    /// - Parameter builder: 约束构建闭包，参数 `$0` 为 `MASSwiftMakerProxy`
+    /// - Parameter builder: 约束构建闭包，参数 `$0` 为 `MASConstraintMaker`
     /// - Returns: 已安装的约束数组
     @MainActor
     @discardableResult
-    public func masMakeConstraints(_ builder: (_ make: MASSwiftMakerProxy) -> Void) -> [MASConstraint] {
+    public func masMakeConstraints(_ builder: (_ make: MASConstraintMaker) -> Void) -> [MASConstraint] {
         mas.makeConstraints(builder)
     }
 
@@ -77,7 +77,7 @@ extension UIView {
     /// - Returns: 已创建/更新的约束数组
     @MainActor
     @discardableResult
-    public func masUpdateConstraints(_ builder: (_ make: MASSwiftMakerProxy) -> Void) -> [MASConstraint] {
+    public func masUpdateConstraints(_ builder: (_ make: MASConstraintMaker) -> Void) -> [MASConstraint] {
         mas.updateConstraints(builder)
     }
 
@@ -87,23 +87,12 @@ extension UIView {
     /// - Returns: 已创建的约束数组
     @MainActor
     @discardableResult
-    public func masRemakeConstraints(_ builder: (_ make: MASSwiftMakerProxy) -> Void) -> [MASConstraint] {
+    public func masRemakeConstraints(_ builder: (_ make: MASConstraintMaker) -> Void) -> [MASConstraint] {
         mas.remakeConstraints(builder)
     }
 }
 
 #endif
 
-// MARK: - MASConstraint 便捷扩展
-
-extension MASConstraint {
-
-    /// 获取 Swift 友好的约束代理
-    ///
-    /// 通过此属性将 ObjC `MASConstraint` 转换为 `MASSwiftConstraintProxy`，
-    /// 以使用 Swift 原生的链式调用语法。
-    @MainActor
-    public var swift: MASSwiftConstraintProxy {
-        MASSwiftConstraintProxy(self)
-    }
-}
+// MARK: - MASConstraint 便捷扩展（已迁移至 Extension）
+// MASConstraint.swift 属性已不再需要，Extension 方法直接在 MASConstraint 上提供

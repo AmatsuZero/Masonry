@@ -77,17 +77,17 @@ MAS_SWIFT_UI_ACTOR
 /**
  *	Sets the NSLayoutConstraint priority to MASLayoutPriorityLow
  */
-- (MASConstraint * (^)(void))priorityLow;
+- (MASConstraint * (^)(void))priorityLow NS_REFINED_FOR_SWIFT;
 
 /**
  *	Sets the NSLayoutConstraint priority to MASLayoutPriorityMedium
  */
-- (MASConstraint * (^)(void))priorityMedium;
+- (MASConstraint * (^)(void))priorityMedium NS_REFINED_FOR_SWIFT;
 
 /**
  *	Sets the NSLayoutConstraint priority to MASLayoutPriorityHigh
  */
-- (MASConstraint * (^)(void))priorityHigh;
+- (MASConstraint * (^)(void))priorityHigh NS_REFINED_FOR_SWIFT;
 
 /**
  *	Sets the constraint relation to NSLayoutRelationEqual

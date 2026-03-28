@@ -51,34 +51,34 @@ NS_SWIFT_UI_ACTOR
 @interface MASConstraintMaker : NSObject
 
 /**
- *	The following properties return a new MASViewConstraint
+ *	The following methods return a new MASViewConstraint
  *  with the first item set to the makers associated view and the appropriate MASViewAttribute
  */
-@property (nonatomic, strong, readonly) MASConstraint *left;
-@property (nonatomic, strong, readonly) MASConstraint *top;
-@property (nonatomic, strong, readonly) MASConstraint *right;
-@property (nonatomic, strong, readonly) MASConstraint *bottom;
-@property (nonatomic, strong, readonly) MASConstraint *leading;
-@property (nonatomic, strong, readonly) MASConstraint *trailing;
-@property (nonatomic, strong, readonly) MASConstraint *width;
-@property (nonatomic, strong, readonly) MASConstraint *height;
-@property (nonatomic, strong, readonly) MASConstraint *centerX;
-@property (nonatomic, strong, readonly) MASConstraint *centerY;
-@property (nonatomic, strong, readonly) MASConstraint *baseline;
+- (MASConstraint *)left;
+- (MASConstraint *)top;
+- (MASConstraint *)right;
+- (MASConstraint *)bottom;
+- (MASConstraint *)leading;
+- (MASConstraint *)trailing;
+- (MASConstraint *)width;
+- (MASConstraint *)height;
+- (MASConstraint *)centerX;
+- (MASConstraint *)centerY;
+- (MASConstraint *)baseline;
 
-@property (nonatomic, strong, readonly) MASConstraint *firstBaseline;
-@property (nonatomic, strong, readonly) MASConstraint *lastBaseline;
+- (MASConstraint *)firstBaseline;
+- (MASConstraint *)lastBaseline;
 
 #if TARGET_OS_IPHONE || TARGET_OS_TV
 
-@property (nonatomic, strong, readonly) MASConstraint *leftMargin;
-@property (nonatomic, strong, readonly) MASConstraint *rightMargin;
-@property (nonatomic, strong, readonly) MASConstraint *topMargin;
-@property (nonatomic, strong, readonly) MASConstraint *bottomMargin;
-@property (nonatomic, strong, readonly) MASConstraint *leadingMargin;
-@property (nonatomic, strong, readonly) MASConstraint *trailingMargin;
-@property (nonatomic, strong, readonly) MASConstraint *centerXWithinMargins;
-@property (nonatomic, strong, readonly) MASConstraint *centerYWithinMargins;
+- (MASConstraint *)leftMargin;
+- (MASConstraint *)rightMargin;
+- (MASConstraint *)topMargin;
+- (MASConstraint *)bottomMargin;
+- (MASConstraint *)leadingMargin;
+- (MASConstraint *)trailingMargin;
+- (MASConstraint *)centerXWithinMargins;
+- (MASConstraint *)centerYWithinMargins;
 
 #endif
 
@@ -87,28 +87,28 @@ NS_SWIFT_UI_ACTOR
  *  to the makers associated view and children corresponding to the set bits in the
  *  MASAttribute parameter. Combine multiple attributes via binary-or.
  */
-@property (nonatomic, strong, readonly) MASConstraint *(^attributes)(MASAttribute attrs);
+- (MASConstraint *(^)(MASAttribute attrs))attributes;
 
 /**
  *	Creates a MASCompositeConstraint with type MASCompositeConstraintTypeEdges
  *  which generates the appropriate MASViewConstraint children (top, left, bottom, right)
  *  with the first item set to the makers associated view
  */
-@property (nonatomic, strong, readonly) MASConstraint *edges;
+- (MASConstraint *)edges;
 
 /**
  *	Creates a MASCompositeConstraint with type MASCompositeConstraintTypeSize
  *  which generates the appropriate MASViewConstraint children (width, height)
  *  with the first item set to the makers associated view
  */
-@property (nonatomic, strong, readonly) MASConstraint *size;
+- (MASConstraint *)size;
 
 /**
  *	Creates a MASCompositeConstraint with type MASCompositeConstraintTypeCenter
  *  which generates the appropriate MASViewConstraint children (centerX, centerY)
  *  with the first item set to the makers associated view
  */
-@property (nonatomic, strong, readonly) MASConstraint *center;
+- (MASConstraint *)center;
 
 /**
  *  Whether or not to check for an existing constraint instead of adding constraint

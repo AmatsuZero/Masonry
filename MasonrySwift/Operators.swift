@@ -17,38 +17,117 @@ import Masonry
 
 // MARK: - MASConstraint 运算符重载
 
-/// 等于运算符：设置约束等于给定值
+// ── 关系运算符：MASViewAttribute ──
+
+/// 等于运算符：设置约束等于视图属性
 ///
 /// ```swift
-/// make.width == 100
 /// make.top == superview.mas.top
+/// make.width == otherView.mas.width
 /// ```
 @MainActor
 @discardableResult
-public func == (lhs: MASSwiftConstraintProxy, rhs: Any?) -> MASSwiftConstraintProxy {
+public func == (lhs: MASConstraint, rhs: ViewAttribute) -> MASConstraint {
     return lhs.equalTo(rhs)
 }
 
-/// 大于等于运算符：设置约束大于等于给定值
+/// 大于等于运算符：设置约束大于等于视图属性
+@MainActor
+@discardableResult
+public func >= (lhs: MASConstraint, rhs: ViewAttribute) -> MASConstraint {
+    return lhs.greaterThanOrEqualTo(rhs)
+}
+
+/// 小于等于运算符：设置约束小于等于视图属性
+@MainActor
+@discardableResult
+public func <= (lhs: MASConstraint, rhs: ViewAttribute) -> MASConstraint {
+    return lhs.lessThanOrEqualTo(rhs)
+}
+
+// ── 关系运算符：UIView / NSView ──
+
+#if canImport(UIKit)
+/// 等于运算符：设置约束等于另一个视图（自动匹配同名属性）
+///
+/// ```swift
+/// make.center == container
+/// make.edges == superview
+/// ```
+@MainActor
+@discardableResult
+public func == (lhs: MASConstraint, rhs: UIView) -> MASConstraint {
+    return lhs.equalTo(rhs)
+}
+
+/// 大于等于运算符：设置约束大于等于另一个视图
+@MainActor
+@discardableResult
+public func >= (lhs: MASConstraint, rhs: UIView) -> MASConstraint {
+    return lhs.greaterThanOrEqualTo(rhs)
+}
+
+/// 小于等于运算符：设置约束小于等于另一个视图
+@MainActor
+@discardableResult
+public func <= (lhs: MASConstraint, rhs: UIView) -> MASConstraint {
+    return lhs.lessThanOrEqualTo(rhs)
+}
+#elseif canImport(AppKit)
+/// 等于运算符：设置约束等于另一个视图（自动匹配同名属性）
+@MainActor
+@discardableResult
+public func == (lhs: MASConstraint, rhs: NSView) -> MASConstraint {
+    return lhs.equalTo(rhs)
+}
+
+/// 大于等于运算符：设置约束大于等于另一个视图
+@MainActor
+@discardableResult
+public func >= (lhs: MASConstraint, rhs: NSView) -> MASConstraint {
+    return lhs.greaterThanOrEqualTo(rhs)
+}
+
+/// 小于等于运算符：设置约束小于等于另一个视图
+@MainActor
+@discardableResult
+public func <= (lhs: MASConstraint, rhs: NSView) -> MASConstraint {
+    return lhs.lessThanOrEqualTo(rhs)
+}
+#endif
+
+// ── 关系运算符：CGFloat（数值字面量）──
+///
+/// ```swift
+/// make.width == 100
+/// make.height == 44.5
+/// ```
+@MainActor
+@discardableResult
+public func == (lhs: MASConstraint, rhs: CGFloat) -> MASConstraint {
+    return lhs.equalTo(NSNumber(value: Double(rhs)))
+}
+
+/// 大于等于运算符：设置约束大于等于数值
 ///
 /// ```swift
 /// make.height >= 44
 /// ```
 @MainActor
 @discardableResult
-public func >= (lhs: MASSwiftConstraintProxy, rhs: Any?) -> MASSwiftConstraintProxy {
-    return lhs.greaterThanOrEqualTo(rhs)
+public func >= (lhs: MASConstraint, rhs: CGFloat) -> MASConstraint {
+    return lhs.greaterThanOrEqualTo(NSNumber(value: Double(rhs)))
 }
 
-/// 小于等于运算符：设置约束小于等于给定值
+/// 小于等于运算符：设置约束小于等于数值
 ///
 /// ```swift
 /// make.width <= 320
 /// ```
 @MainActor
 @discardableResult
-public func <= (lhs: MASSwiftConstraintProxy, rhs: Any?) -> MASSwiftConstraintProxy {
-    return lhs.lessThanOrEqualTo(rhs)
+public func <= (lhs: MASConstraint, rhs: CGFloat) -> MASConstraint {
+    return lhs.lessThanOrEqualTo(NSNumber(value: Double(rhs)))
 }
 
 // MARK: - MASAttributeOffset 运算符重载（支持 make.left == view.mas.right + 10）
@@ -60,7 +139,7 @@ public func <= (lhs: MASSwiftConstraintProxy, rhs: Any?) -> MASSwiftConstraintPr
 /// ```
 @MainActor
 @discardableResult
-public func == (lhs: MASSwiftConstraintProxy, rhs: MASAttributeOffset) -> MASSwiftConstraintProxy {
+public func == (lhs: MASConstraint, rhs: MASAttributeOffset) -> MASConstraint {
     return lhs.equalTo(rhs.attribute).offset(rhs.offset)
 }
 
@@ -71,7 +150,7 @@ public func == (lhs: MASSwiftConstraintProxy, rhs: MASAttributeOffset) -> MASSwi
 /// ```
 @MainActor
 @discardableResult
-public func >= (lhs: MASSwiftConstraintProxy, rhs: MASAttributeOffset) -> MASSwiftConstraintProxy {
+public func >= (lhs: MASConstraint, rhs: MASAttributeOffset) -> MASConstraint {
     return lhs.greaterThanOrEqualTo(rhs.attribute).offset(rhs.offset)
 }
 
@@ -82,7 +161,7 @@ public func >= (lhs: MASSwiftConstraintProxy, rhs: MASAttributeOffset) -> MASSwi
 /// ```
 @MainActor
 @discardableResult
-public func <= (lhs: MASSwiftConstraintProxy, rhs: MASAttributeOffset) -> MASSwiftConstraintProxy {
+public func <= (lhs: MASConstraint, rhs: MASAttributeOffset) -> MASConstraint {
     return lhs.lessThanOrEqualTo(rhs.attribute).offset(rhs.offset)
 }
 
@@ -93,7 +172,7 @@ public func <= (lhs: MASSwiftConstraintProxy, rhs: MASAttributeOffset) -> MASSwi
 /// ```
 @MainActor
 @discardableResult
-public func * (lhs: MASSwiftConstraintProxy, rhs: CGFloat) -> MASSwiftConstraintProxy {
+public func * (lhs: MASConstraint, rhs: CGFloat) -> MASConstraint {
     return lhs.multipliedBy(rhs)
 }
 
@@ -104,7 +183,7 @@ public func * (lhs: MASSwiftConstraintProxy, rhs: CGFloat) -> MASSwiftConstraint
 /// ```
 @MainActor
 @discardableResult
-public func / (lhs: MASSwiftConstraintProxy, rhs: CGFloat) -> MASSwiftConstraintProxy {
+public func / (lhs: MASConstraint, rhs: CGFloat) -> MASConstraint {
     return lhs.dividedBy(rhs)
 }
 
@@ -115,7 +194,7 @@ public func / (lhs: MASSwiftConstraintProxy, rhs: CGFloat) -> MASSwiftConstraint
 /// ```
 @MainActor
 @discardableResult
-public func + (lhs: MASSwiftConstraintProxy, rhs: CGFloat) -> MASSwiftConstraintProxy {
+public func + (lhs: MASConstraint, rhs: CGFloat) -> MASConstraint {
     return lhs.offset(rhs)
 }
 
@@ -126,7 +205,7 @@ public func + (lhs: MASSwiftConstraintProxy, rhs: CGFloat) -> MASSwiftConstraint
 /// ```
 @MainActor
 @discardableResult
-public func - (lhs: MASSwiftConstraintProxy, rhs: CGFloat) -> MASSwiftConstraintProxy {
+public func - (lhs: MASConstraint, rhs: CGFloat) -> MASConstraint {
     return lhs.offset(-rhs)
 }
 
@@ -148,7 +227,7 @@ public func - (lhs: MASSwiftConstraintProxy, rhs: CGFloat) -> MASSwiftConstraint
 /// constraint += 10
 /// ```
 @MainActor
-public func += (lhs: inout MASSwiftConstraintProxy, rhs: CGFloat) {
+public func += (lhs: inout MASConstraint, rhs: CGFloat) {
     lhs = lhs.offset(rhs)
 }
 
@@ -168,31 +247,31 @@ public func += (lhs: inout MASSwiftConstraintProxy, rhs: CGFloat) {
 /// constraint -= 20
 /// ```
 @MainActor
-public func -= (lhs: inout MASSwiftConstraintProxy, rhs: CGFloat) {
+public func -= (lhs: inout MASConstraint, rhs: CGFloat) {
     lhs = lhs.offset(-rhs)
 }
 
 /// 复合加法赋值运算符：增加约束偏移量（Int）
 @MainActor
-public func += (lhs: inout MASSwiftConstraintProxy, rhs: Int) {
+public func += (lhs: inout MASConstraint, rhs: Int) {
     lhs = lhs.offset(CGFloat(rhs))
 }
 
 /// 复合减法赋值运算符：减少约束偏移量（Int）
 @MainActor
-public func -= (lhs: inout MASSwiftConstraintProxy, rhs: Int) {
+public func -= (lhs: inout MASConstraint, rhs: Int) {
     lhs = lhs.offset(CGFloat(-rhs))
 }
 
 /// 复合加法赋值运算符：增加约束偏移量（Double）
 @MainActor
-public func += (lhs: inout MASSwiftConstraintProxy, rhs: Double) {
+public func += (lhs: inout MASConstraint, rhs: Double) {
     lhs = lhs.offset(CGFloat(rhs))
 }
 
 /// 复合减法赋值运算符：减少约束偏移量（Double）
 @MainActor
-public func -= (lhs: inout MASSwiftConstraintProxy, rhs: Double) {
+public func -= (lhs: inout MASConstraint, rhs: Double) {
     lhs = lhs.offset(CGFloat(-rhs))
 }
 
@@ -213,7 +292,7 @@ infix operator ~ : AdditionPrecedence
 /// ```
 @MainActor
 @discardableResult
-public func ~ (lhs: MASSwiftConstraintProxy, rhs: Float) -> MASSwiftConstraintProxy {
+public func ~ (lhs: MASConstraint, rhs: Float) -> MASConstraint {
     return lhs.priority(rhs)
 }
 
@@ -225,7 +304,7 @@ public func ~ (lhs: MASSwiftConstraintProxy, rhs: Float) -> MASSwiftConstraintPr
 /// ```
 @MainActor
 @discardableResult
-public func ~ (lhs: MASSwiftConstraintProxy, rhs: UILayoutPriority) -> MASSwiftConstraintProxy {
+public func ~ (lhs: MASConstraint, rhs: UILayoutPriority) -> MASConstraint {
     return lhs.priority(rhs.rawValue)
 }
 #endif
@@ -241,6 +320,6 @@ public func ~ (lhs: MASSwiftConstraintProxy, rhs: UILayoutPriority) -> MASSwiftC
 /// ```
 @MainActor
 @discardableResult
-public func ~ (lhs: MASSwiftConstraintProxy, rhs: MASConstraintPriority) -> MASSwiftConstraintProxy {
+public func ~ (lhs: MASConstraint, rhs: MASConstraintPriority) -> MASConstraint {
     return lhs.priority(rhs.value)
 }

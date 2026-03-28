@@ -19,7 +19,7 @@ import AppKit
 
 // MARK: - 测试辅助扩展
 
-extension MASSwiftConstraintProxy {
+extension MASConstraint {
     /// 获取第一个底层 NSLayoutConstraint（测试辅助）
     var firstLayoutConstraint: NSLayoutConstraint? {
         layoutConstraints.first
@@ -90,7 +90,7 @@ final class ConstraintRelationTests: XCTestCase {
     // MARK: - equalTo 关系验证
 
     func testEqualToCreatesEqualRelation() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.top.equalTo(superview!)
         }
@@ -100,7 +100,7 @@ final class ConstraintRelationTests: XCTestCase {
     }
 
     func testEqualToSuperviewCreatesEqualRelation() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.top.equalToSuperview()
         }
@@ -113,7 +113,7 @@ final class ConstraintRelationTests: XCTestCase {
     // MARK: - greaterThanOrEqualTo 关系验证
 
     func testGreaterThanOrEqualToCreatesCorrectRelation() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.top.greaterThanOrEqualTo(superview!)
         }
@@ -124,7 +124,7 @@ final class ConstraintRelationTests: XCTestCase {
     }
 
     func testGreaterThanOrEqualToSuperviewCreatesCorrectRelation() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.top.greaterThanOrEqualToSuperview()
         }
@@ -138,7 +138,7 @@ final class ConstraintRelationTests: XCTestCase {
     // MARK: - lessThanOrEqualTo 关系验证
 
     func testLessThanOrEqualToCreatesCorrectRelation() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.bottom.lessThanOrEqualTo(superview!)
         }
@@ -149,7 +149,7 @@ final class ConstraintRelationTests: XCTestCase {
     }
 
     func testLessThanOrEqualToSuperviewCreatesCorrectRelation() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.bottom.lessThanOrEqualToSuperview()
         }
@@ -163,7 +163,7 @@ final class ConstraintRelationTests: XCTestCase {
     // MARK: - 运算符关系验证
 
     func testEqualOperatorCreatesEqualRelation() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = (make.width == 100)
         }
@@ -174,7 +174,7 @@ final class ConstraintRelationTests: XCTestCase {
     }
 
     func testGreaterThanOrEqualOperatorCreatesCorrectRelation() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = (make.width >= 50)
         }
@@ -185,7 +185,7 @@ final class ConstraintRelationTests: XCTestCase {
     }
 
     func testLessThanOrEqualOperatorCreatesCorrectRelation() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = (make.width <= 200)
         }
@@ -222,7 +222,7 @@ final class ConstraintAttributeTests: XCTestCase {
     }
 
     func testLeftAttribute() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.left.equalToSuperview()
         }
@@ -230,7 +230,7 @@ final class ConstraintAttributeTests: XCTestCase {
     }
 
     func testTopAttribute() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.top.equalToSuperview()
         }
@@ -238,7 +238,7 @@ final class ConstraintAttributeTests: XCTestCase {
     }
 
     func testRightAttribute() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.right.equalToSuperview()
         }
@@ -246,7 +246,7 @@ final class ConstraintAttributeTests: XCTestCase {
     }
 
     func testBottomAttribute() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.bottom.equalToSuperview()
         }
@@ -254,7 +254,7 @@ final class ConstraintAttributeTests: XCTestCase {
     }
 
     func testLeadingAttribute() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.leading.equalToSuperview()
         }
@@ -262,7 +262,7 @@ final class ConstraintAttributeTests: XCTestCase {
     }
 
     func testTrailingAttribute() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.trailing.equalToSuperview()
         }
@@ -270,7 +270,7 @@ final class ConstraintAttributeTests: XCTestCase {
     }
 
     func testWidthAttribute() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalTo(100)
         }
@@ -278,7 +278,7 @@ final class ConstraintAttributeTests: XCTestCase {
     }
 
     func testHeightAttribute() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.height.equalTo(50)
         }
@@ -286,7 +286,7 @@ final class ConstraintAttributeTests: XCTestCase {
     }
 
     func testCenterXAttribute() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.centerX.equalToSuperview()
         }
@@ -294,7 +294,7 @@ final class ConstraintAttributeTests: XCTestCase {
     }
 
     func testCenterYAttribute() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.centerY.equalToSuperview()
         }
@@ -302,7 +302,7 @@ final class ConstraintAttributeTests: XCTestCase {
     }
 
     func testBaselineAttribute() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.baseline.equalToSuperview()
         }
@@ -336,7 +336,7 @@ final class ConstraintPriorityTests: XCTestCase {
     }
 
     func testPriorityFloat() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalTo(100).priority(600)
         }
@@ -346,7 +346,7 @@ final class ConstraintPriorityTests: XCTestCase {
     }
 
     func testPriorityHigh() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalTo(100).priorityHigh()
         }
@@ -356,7 +356,7 @@ final class ConstraintPriorityTests: XCTestCase {
     }
 
     func testPriorityMedium() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalTo(100).priorityMedium()
         }
@@ -366,7 +366,7 @@ final class ConstraintPriorityTests: XCTestCase {
     }
 
     func testPriorityLow() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalTo(100).priorityLow()
         }
@@ -376,7 +376,7 @@ final class ConstraintPriorityTests: XCTestCase {
     }
 
     func testPriorityWithMASConstraintPriorityEnum() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalTo(100).priority(.high)
         }
@@ -386,7 +386,7 @@ final class ConstraintPriorityTests: XCTestCase {
     }
 
     func testPriorityWithCustomMASConstraintPriority() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalTo(100).priority(MASConstraintPriority(333))
         }
@@ -396,7 +396,7 @@ final class ConstraintPriorityTests: XCTestCase {
     }
 
     func testTildeOperatorWithMASConstraintPriority() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = (make.width == 100) ~ .high
         }
@@ -406,7 +406,7 @@ final class ConstraintPriorityTests: XCTestCase {
     }
 
     func testTildeOperatorWithFloatPriority() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = (make.width == 100) ~ 444
         }
@@ -442,7 +442,7 @@ final class ConstraintOffsetTests: XCTestCase {
     }
 
     func testOffset() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.top.equalToSuperview().offset(20)
         }
@@ -451,7 +451,7 @@ final class ConstraintOffsetTests: XCTestCase {
     }
 
     func testInsetOnEdges() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.edges.equalToSuperview().inset(15)
         }
@@ -474,7 +474,7 @@ final class ConstraintOffsetTests: XCTestCase {
     }
 
     func testInsetsWithEdgeInsets() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.edges.equalToSuperview().insets(
                 MASNativeEdgeInsets(top: 10, left: 20, bottom: 30, right: 40)
@@ -500,7 +500,7 @@ final class ConstraintOffsetTests: XCTestCase {
     }
 
     func testUpdateOffsetChangesConstant() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.top.equalToSuperview().offset(20)
         }
@@ -512,7 +512,7 @@ final class ConstraintOffsetTests: XCTestCase {
     }
 
     func testUpdateInsetChangesConstant() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.edges.equalToSuperview().inset(10)
         }
@@ -531,7 +531,7 @@ final class ConstraintOffsetTests: XCTestCase {
     }
 
     func testPlusOperatorAddsOffset() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.top.equalToSuperview() + 30
         }
@@ -539,7 +539,7 @@ final class ConstraintOffsetTests: XCTestCase {
     }
 
     func testMinusOperatorSubtractsOffset() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.top.equalToSuperview() - 15
         }
@@ -573,7 +573,7 @@ final class ConstraintMultiplierTests: XCTestCase {
     }
 
     func testMultipliedBy() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalToSuperview().multipliedBy(0.5)
         }
@@ -582,7 +582,7 @@ final class ConstraintMultiplierTests: XCTestCase {
     }
 
     func testDividedBy() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalToSuperview().dividedBy(3)
         }
@@ -592,7 +592,7 @@ final class ConstraintMultiplierTests: XCTestCase {
     }
 
     func testMultiplyOperator() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalToSuperview() * 0.75
         }
@@ -600,7 +600,7 @@ final class ConstraintMultiplierTests: XCTestCase {
     }
 
     func testDivideOperator() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalToSuperview() / 4
         }
@@ -635,7 +635,7 @@ final class CompositeConstraintTests: XCTestCase {
     }
 
     func testEdgesCreates4Constraints() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.edges.equalToSuperview()
         }
@@ -650,7 +650,7 @@ final class CompositeConstraintTests: XCTestCase {
     }
 
     func testSizeCreates2Constraints() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.size.equalTo(CGSize(width: 100, height: 50))
         }
@@ -663,7 +663,7 @@ final class CompositeConstraintTests: XCTestCase {
     }
 
     func testCenterCreates2Constraints() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.center.equalToSuperview()
         }
@@ -676,7 +676,7 @@ final class CompositeConstraintTests: XCTestCase {
     }
 
     func testDirectionalEdgesCreates4Constraints() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.directionalEdges.equalToSuperview()
         }
@@ -692,7 +692,7 @@ final class CompositeConstraintTests: XCTestCase {
 
     #if canImport(UIKit)
     func testMarginsCreates4Constraints() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.margins.equalToSuperview()
         }
@@ -707,7 +707,7 @@ final class CompositeConstraintTests: XCTestCase {
     }
 
     func testDirectionalMarginsCreates4Constraints() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.directionalMargins.equalToSuperview()
         }
@@ -723,7 +723,7 @@ final class CompositeConstraintTests: XCTestCase {
     #endif
 
     func testSizeWithCGSizeConstant() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.size.equalTo(CGSize(width: 120, height: 80))
         }
@@ -764,7 +764,7 @@ final class ConstraintLifecycleTests: XCTestCase {
     }
 
     func testIsActiveAfterInstall() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalTo(100)
         }
@@ -772,7 +772,7 @@ final class ConstraintLifecycleTests: XCTestCase {
     }
 
     func testIsActiveAfterDeactivate() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalTo(100)
         }
@@ -781,7 +781,7 @@ final class ConstraintLifecycleTests: XCTestCase {
     }
 
     func testReactivateAfterDeactivate() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalTo(100)
         }
@@ -793,7 +793,7 @@ final class ConstraintLifecycleTests: XCTestCase {
     }
 
     func testUninstallRemovesConstraint() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalTo(100)
         }
@@ -805,7 +805,7 @@ final class ConstraintLifecycleTests: XCTestCase {
     }
 
     func testLayoutConstraintsReturnsCorrectCount() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.edges.equalToSuperview()
         }
@@ -820,7 +820,7 @@ final class ConstraintLifecycleTests: XCTestCase {
         }
         // prepareConstraints 返回的约束未安装，layoutConstraint 应为 nil
         if let first = constraints.first {
-            let proxy = MASSwiftConstraintProxy(first)
+            let proxy = first
             XCTAssertTrue(proxy.layoutConstraints.isEmpty,
                           "未安装的约束 layoutConstraints 应为空")
         }
@@ -853,7 +853,7 @@ final class ConstraintLabeledTests: XCTestCase {
     }
 
     func testLabeledSetsIdentifier() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.top.equalToSuperview().labeled("myTopConstraint")
         }
@@ -869,7 +869,7 @@ final class ConstraintLabeledTests: XCTestCase {
     }
 
     func testLabeledOnCompositeConstraint() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.edges.equalToSuperview().labeled("edgesConstraint")
         }
@@ -1079,7 +1079,7 @@ final class InterViewConstraintTests: XCTestCase {
     }
 
     func testEqualToAnotherView() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         viewA.mas.makeConstraints { make in
             proxy = make.top.equalTo(viewB!)
         }
@@ -1092,7 +1092,7 @@ final class InterViewConstraintTests: XCTestCase {
     }
 
     func testEqualToAnotherViewAttribute() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         viewA.mas.makeConstraints { make in
             proxy = make.top.equalTo(viewB!.mas.bottom)
         }
@@ -1106,7 +1106,7 @@ final class InterViewConstraintTests: XCTestCase {
     }
 
     func testEqualToAnotherViewWithOffset() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         viewA.mas.makeConstraints { make in
             proxy = make.top.equalTo(viewB!.mas.bottom).offset(10)
         }
@@ -1117,7 +1117,7 @@ final class InterViewConstraintTests: XCTestCase {
     }
 
     func testWidthEqualToAnotherViewWidth() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         viewA.mas.makeConstraints { make in
             proxy = make.width.equalTo(viewB!.mas.width)
         }
@@ -1129,7 +1129,7 @@ final class InterViewConstraintTests: XCTestCase {
     }
 
     func testWidthEqualToAnotherViewWidthWithMultiplier() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         viewA.mas.makeConstraints { make in
             proxy = make.width.equalTo(viewB!.mas.width).multipliedBy(0.5)
         }
@@ -1164,7 +1164,7 @@ extension ConstraintLifecycleTests {
 
     /// 验证 updateConstraints 确实修改了 constant
     func testUpdateConstraintsModifiesConstant() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.top.equalToSuperview().offset(10)
         }
@@ -1184,7 +1184,7 @@ extension ConstraintLifecycleTests {
         }
         // makeConstraints 返回顶层 MASConstraint（edges = 1 个 Composite）
         // 用 layoutConstraints 展开获取底层 NSLayoutConstraint 数量
-        let nsConstraints = returned.flatMap { MASSwiftConstraintProxy($0).layoutConstraints }
+        let nsConstraints = returned.flatMap { $0.layoutConstraints }
         XCTAssertEqual(nsConstraints.count, 4,
                        "edges 展开后应有 4 个底层 NSLayoutConstraint")
     }
@@ -1201,7 +1201,7 @@ extension ConstraintLifecycleTests {
         }
 
         for c in oldConstraints {
-            XCTAssertFalse(MASSwiftConstraintProxy(c).isActive,
+            XCTAssertFalse(c.isActive,
                            "remakeConstraints 后旧约束应被停用")
         }
     }
@@ -1218,23 +1218,23 @@ extension ConstraintLifecycleTests {
         // prepareConstraints 初始状态：未安装，layoutConstraints 为空
         // （注意：Masonry 内部跟踪的 isActive 与底层 NSLayoutConstraint.isActive 不同步）
         for c in constraints {
-            XCTAssertTrue(MASSwiftConstraintProxy(c).layoutConstraints.isEmpty,
+            XCTAssertTrue(c.layoutConstraints.isEmpty,
                           "prepareConstraints 后底层 NSLayoutConstraint 应尚未创建")
         }
 
         // 手动激活：安装底层约束
         constraints.forEach { $0.activate() }
         for c in constraints {
-            XCTAssertFalse(MASSwiftConstraintProxy(c).layoutConstraints.isEmpty,
+            XCTAssertFalse(c.layoutConstraints.isEmpty,
                            "activate() 后应创建底层 NSLayoutConstraint")
-            XCTAssertTrue(MASSwiftConstraintProxy(c).isActive,
+            XCTAssertTrue(c.isActive,
                           "activate() 后约束应为激活状态")
         }
 
         // 手动停用
         constraints.forEach { $0.deactivate() }
         for c in constraints {
-            XCTAssertFalse(MASSwiftConstraintProxy(c).isActive,
+            XCTAssertFalse(c.isActive,
                            "deactivate() 后约束应为非激活状态")
         }
     }
@@ -1246,7 +1246,7 @@ extension ConstraintPriorityTests {
 
     /// 验证 .required 优先级（1000）
     func testPriorityRequired() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.width.equalTo(100).priority(.required)
         }
@@ -1269,7 +1269,7 @@ extension CompositeConstraintTests {
         }
         // makeConstraints 返回顶层 MASConstraint（链式属性生成 1 个 Composite）
         // 用 layoutConstraints 获取展开后的底层 NSLayoutConstraint 数量
-        let nsConstraints = returned.flatMap { MASSwiftConstraintProxy($0).layoutConstraints }
+        let nsConstraints = returned.flatMap { $0.layoutConstraints }
         XCTAssertEqual(nsConstraints.count, 2, "make.top.left 应展开为 2 个底层约束")
 
         let attributes = Set(nsConstraints.map { $0.firstAttribute })
@@ -1282,7 +1282,7 @@ extension CompositeConstraintTests {
         let returned = view.mas.makeConstraints { make in
             make.top.left.right.bottom.equalToSuperview()
         }
-        let nsConstraints = returned.flatMap { MASSwiftConstraintProxy($0).layoutConstraints }
+        let nsConstraints = returned.flatMap { $0.layoutConstraints }
         XCTAssertEqual(nsConstraints.count, 4,
                        "make.top.left.right.bottom 链式调用应展开为 4 个底层约束")
     }
@@ -1294,7 +1294,7 @@ extension CompositeConstraintTests {
             make.left.right.equalToSuperview()
             make.top.bottom.equalToSuperview()
         }
-        let nsConstraints = returned.flatMap { MASSwiftConstraintProxy($0).layoutConstraints }
+        let nsConstraints = returned.flatMap { $0.layoutConstraints }
         XCTAssertEqual(nsConstraints.count, 4,
                        "水平 + 垂直边约束应共展开为 4 个底层约束")
     }
@@ -1306,7 +1306,7 @@ extension ConstraintOffsetTests {
 
     /// 验证 updateInsets(EdgeInsets) 逐边更新 constant
     func testUpdateInsetsWithEdgeInsets() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.edges.equalToSuperview().inset(10)
         }
@@ -1332,7 +1332,7 @@ extension ConstraintOffsetTests {
 
     /// 验证 sizeOffset 设置宽高偏移量
     func testSizeOffsetMethod() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.size.equalTo(superview!).sizeOffset(CGSize(width: -20, height: -30))
         }
@@ -1350,7 +1350,7 @@ extension ConstraintOffsetTests {
 
     /// 验证 centerOffset 设置中心偏移量
     func testCenterOffsetMethod() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.center.equalTo(superview!).centerOffset(CGPoint(x: 10, y: -5))
         }
@@ -1509,7 +1509,7 @@ final class ConstraintLocationTests: XCTestCase {
 
     /// equalTo 自动捕获调用文件和行号，写入 mas_key
     func testEqualToCapuresFileAndLine() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         let expectedLine: UInt = #line + 2
         view.mas.makeConstraints { make in
             proxy = make.top.equalTo(superview.mas_top)
@@ -1525,7 +1525,7 @@ final class ConstraintLocationTests: XCTestCase {
 
     /// greaterThanOrEqualTo 自动捕获调用文件和行号，写入 mas_key
     func testGreaterThanOrEqualToCapuresFileAndLine() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         let expectedLine: UInt = #line + 2
         view.mas.makeConstraints { make in
             proxy = make.width.greaterThanOrEqualTo(CGFloat(50))
@@ -1541,7 +1541,7 @@ final class ConstraintLocationTests: XCTestCase {
 
     /// lessThanOrEqualTo 自动捕获调用文件和行号，写入 mas_key
     func testLessThanOrEqualToCapuresFileAndLine() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         let expectedLine: UInt = #line + 2
         view.mas.makeConstraints { make in
             proxy = make.height.lessThanOrEqualTo(CGFloat(200))
@@ -1557,7 +1557,7 @@ final class ConstraintLocationTests: XCTestCase {
 
     /// 用户显式调用 labeled(_:) 后，key 被覆盖为用户提供的标签
     func testExplicitLabeledOverridesAutoKey() {
-        var proxy: MASSwiftConstraintProxy!
+        var proxy: MASConstraint!
         view.mas.makeConstraints { make in
             proxy = make.top.equalTo(superview.mas_top).labeled("myTopConstraint")
         }
