@@ -87,8 +87,9 @@ SpecBegin(MASViewConstraint) {
     MASViewAttribute *secondViewAttribute = otherView.mas_top;
     constraint.lessThanOrEqualTo(secondViewAttribute);
 
+    MASViewConstraint *capturedConstraint = constraint;
     expect(^{
-        constraint.equalTo(secondViewAttribute);
+        capturedConstraint.equalTo(secondViewAttribute);
     }).to.raise(@"NSInternalInconsistencyException");
 }
 
@@ -96,8 +97,9 @@ SpecBegin(MASViewConstraint) {
     MASViewAttribute *secondViewAttribute = otherView.mas_top;
     constraint.equalTo(secondViewAttribute);
 
+    MASViewConstraint *capturedConstraint = constraint;
     expect(^{
-        constraint.lessThanOrEqualTo(secondViewAttribute);
+        capturedConstraint.lessThanOrEqualTo(secondViewAttribute);
     }).to.raise(@"NSInternalInconsistencyException");
 }
 
@@ -105,8 +107,9 @@ SpecBegin(MASViewConstraint) {
     MASViewAttribute *secondViewAttribute = otherView.mas_top;
     constraint.greaterThanOrEqualTo(secondViewAttribute);
 
+    MASViewConstraint *capturedConstraint = constraint;
     expect(^{
-        constraint.greaterThanOrEqualTo(secondViewAttribute);
+        capturedConstraint.greaterThanOrEqualTo(secondViewAttribute);
     }).to.raise(@"NSInternalInconsistencyException");
 }
 
@@ -231,8 +234,9 @@ SpecBegin(MASViewConstraint) {
 }
 
 - (void)testRelationComplainsWithUnsupportedArgument {
+    MASViewConstraint *capturedConstraint = constraint;
     expect(^{
-        constraint.equalTo(@{});
+        capturedConstraint.equalTo(@{});
     }).to.raise(@"NSInternalInconsistencyException");
 }
 
@@ -283,8 +287,9 @@ SpecBegin(MASViewConstraint) {
 }
 
 - (void)testRelationAutoboxingComplainsWithUnsupportedArgument {
+    MASViewConstraint *capturedConstraint = constraint;
     expect(^{
-        constraint.mas_equalTo(@{});
+        capturedConstraint.mas_equalTo(@{});
     }).to.raise(@"NSInternalInconsistencyException");
 }
 
@@ -322,8 +327,9 @@ SpecBegin(MASViewConstraint) {
 - (void)testMultiplierNotUpdate {
     [constraint install];
 
+    MASViewConstraint *capturedConstraint = constraint;
     expect(^{
-        constraint.multipliedBy(0.9);
+        capturedConstraint.multipliedBy(0.9);
     }).to.raise(@"NSInternalInconsistencyException");
 }
 
@@ -524,9 +530,10 @@ SpecBegin(MASViewConstraint) {
 - (void)testAttributeChainingShouldNotHaveRelation {
     MASViewAttribute *secondViewAttribute = otherView.mas_top;
     constraint.lessThanOrEqualTo(secondViewAttribute);
-    
+
+    MASViewConstraint *capturedConstraint = constraint;
     expect(^{
-        __unused id result = constraint.bottom;
+        __unused id result = capturedConstraint.bottom;
     }).to.raise(@"NSInternalInconsistencyException");
 }
 

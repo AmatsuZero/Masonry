@@ -62,7 +62,7 @@
     [self.constraints replaceObjectAtIndex:index withObject:replacementConstraint];
 }
 
-- (MASConstraint *)constraint:(MASConstraint *)constraint addConstraintWithLayoutAttribute:(NSLayoutAttribute)layoutAttribute {
+- (MASConstraint *)constraint:(nullable MASConstraint *)constraint addConstraintWithLayoutAttribute:(NSLayoutAttribute)layoutAttribute {
     MASViewAttribute *viewAttribute = [[MASViewAttribute alloc] initWithView:self.view layoutAttribute:layoutAttribute];
     MASViewConstraint *newConstraint = [[MASViewConstraint alloc] initWithFirstViewAttribute:viewAttribute];
     if ([constraint isKindOfClass:MASViewConstraint.class]) {
@@ -100,9 +100,8 @@
         @(MASAttributeHeight): ^{ return self.view.mas_height; },
         @(MASAttributeCenterX): ^{ return self.view.mas_centerX; },
         @(MASAttributeCenterY): ^{ return self.view.mas_centerY; },
-        @(MASAttributeBaseline): ^{ return self.view.mas_baseline; },
         @(MASAttributeFirstBaseline): ^{ return self.view.mas_firstBaseline; },
-        @(MASAttributeLastBaseline): ^{ return self.view.mas_lastBaseline; },
+        @(MASAttributeBaseline): ^{ return self.view.mas_baseline; },
 #if TARGET_OS_IPHONE || TARGET_OS_TV
         @(MASAttributeLeftMargin): ^{ return self.view.mas_leftMargin; },
         @(MASAttributeRightMargin): ^{ return self.view.mas_rightMargin; },

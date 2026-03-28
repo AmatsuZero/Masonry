@@ -11,7 +11,9 @@ import UIKit
 import AppKit
 #endif
 
+#if SWIFT_PACKAGE
 import Masonry
+#endif
 
 // MARK: - MASViewDSL（视图命名空间代理）
 
@@ -79,9 +81,7 @@ public struct MASViewDSL {
     /// 内部通过获取已安装的约束并逐个卸载实现。
     public func removeConstraints() {
         let installed = MASViewConstraint.installedConstraints(for: view)
-        for constraint in installed {
-            constraint.uninstall()
-        }
+        installed.forEach { $0.uninstall() }
     }
 
     /// 创建约束但不立即安装
@@ -100,7 +100,7 @@ public struct MASViewDSL {
     /// - Parameter closure: 约束构建闭包
     /// - Returns: 已创建但未安装的约束数组
     public func prepareConstraints(_ closure: (_ make: MASSwiftMakerProxy) -> Void) -> [MASConstraint] {
-        return view.mas_prepareConstraints { maker in
+        view.mas_prepareConstraints { maker in
             closure(MASSwiftMakerProxy(maker))
         }
     }
@@ -228,7 +228,7 @@ public struct MASViewDSL {
     /// - Parameter view: 另一个视图
     /// - Returns: 最近公共父视图，如果不存在则返回 `nil`
     public func closestCommonSuperview(_ otherView: MASNativeView) -> MASNativeView? {
-        return view.mas_closestCommonSuperview(otherView)
+        view.mas_closestCommonSuperview(otherView)
     }
 
     // MARK: - 调试键

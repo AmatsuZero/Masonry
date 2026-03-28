@@ -25,10 +25,13 @@
     [self.constraints replaceObjectAtIndex:[self.constraints indexOfObject:constraint] withObject:replacementConstraint];
 }
 
-- (id)constraint:(MASConstraint *)constraint addConstraintWithLayoutAttribute:(NSLayoutAttribute)layoutAttribute {
+- (id)constraint:(nullable MASConstraint *)constraint addConstraintWithLayoutAttribute:(NSLayoutAttribute)layoutAttribute {
     [self.chainedConstraints addObject:constraint];
-    
-    MASViewConstraint *viewConstraint = [[MASViewConstraint alloc] initWithFirstViewAttribute:[[MASViewAttribute alloc] initWithView:nil layoutAttribute:layoutAttribute]];
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    MASViewConstraint *viewConstraint = [[MASViewConstraint alloc] initWithFirstViewAttribute:[[MASViewAttribute alloc] initWithView:nil item:nil layoutAttribute:layoutAttribute]];
+#pragma clang diagnostic pop
     return viewConstraint;
 }
 

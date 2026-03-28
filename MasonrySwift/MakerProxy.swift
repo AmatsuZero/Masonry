@@ -11,7 +11,9 @@ import UIKit
 import AppKit
 #endif
 
+#if SWIFT_PACKAGE
 import Masonry
+#endif
 
 // MARK: - MASSwiftMakerProxy（ConstraintMaker 代理）
 
@@ -247,7 +249,9 @@ public final class MASSwiftMakerProxy {
     /// - Parameter closure: 约束构建闭包
     /// - Returns: 包含闭包中所有约束的复合约束代理
     @discardableResult
-    public func group(_ closure: @escaping () -> Void) -> MASSwiftConstraintProxy {
-        .init(maker.group()(closure))
+    public func group(_ closure: () -> Void) -> MASSwiftConstraintProxy {
+        withoutActuallyEscaping(closure) { escapableClosure in
+            .init(maker.group()(escapableClosure))
+        }
     }
 }

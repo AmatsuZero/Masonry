@@ -12,8 +12,10 @@ import AppKit
 #endif
 
 // SPM 中 MasonrySwift 作为独立 target 依赖 Masonry ObjC target，需要显式导入模块
-// CocoaPods 混编场景下此 import 也不会产生问题
+// CocoaPods 混编场景下此 import 会产生 "part of same module" 警告，故条件编译
+#if SWIFT_PACKAGE
 import Masonry
+#endif
 
 // MARK: - 类型别名
 
@@ -39,7 +41,7 @@ public typealias MASNativeEdgeInsets = NSEdgeInsets
 /// make.width == 100 ~ .high
 /// make.height == 44 ~ .priority(600)
 /// ```
-public struct MASConstraintPriority: Equatable {
+public struct MASConstraintPriority: Equatable, Sendable {
 
     /// 原始优先级值（0~1000）
     public let value: Float

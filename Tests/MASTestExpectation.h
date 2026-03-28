@@ -9,9 +9,11 @@
 #import <XCTest/XCTest.h>
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface MASTestExpectation : NSObject
 
-+ (instancetype)expectationWithValue:(id)value
++ (instancetype)expectationWithValue:(nullable id)value
                             testCase:(XCTestCase *)testCase
                                 file:(const char *)file
                                 line:(NSUInteger)line;
@@ -35,8 +37,10 @@
 
 @end
 
+NS_ASSUME_NONNULL_END
+
 // Boxing function: extends _MASBoxValue to also handle block types (type[0] == '@' covers both @ and @?)
-static inline id _Nullable _MASExpectBoxValue(const char *type, ...) {
+static inline id _Nullable _MASExpectBoxValue(const char * _Nonnull type, ...) {
     va_list v;
     va_start(v, type);
     id obj = nil;

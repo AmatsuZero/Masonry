@@ -11,7 +11,9 @@ import UIKit
 import AppKit
 #endif
 
+#if SWIFT_PACKAGE
 import Masonry
+#endif
 
 // MARK: - MASConstraint 运算符重载
 

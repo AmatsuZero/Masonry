@@ -11,7 +11,9 @@ import UIKit
 import AppKit
 #endif
 
+#if SWIFT_PACKAGE
 import Masonry
+#endif
 
 // MARK: - MASSwiftConstraintProxy（约束代理，提供 Swift 友好的值包装）
 

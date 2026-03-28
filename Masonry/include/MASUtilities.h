@@ -88,7 +88,7 @@
  *  Given a scalar or struct value, wraps it in NSValue
  *  Based on EXPObjectify: https://github.com/specta/expecta
  */
-static inline id _Nullable _MASBoxValue(const char *type, ...) {
+static inline id _Nullable _MASBoxValue(const char * _Nonnull type, ...) {
     va_list v;
     va_start(v, type);
     id obj = nil;

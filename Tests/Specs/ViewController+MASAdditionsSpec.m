@@ -23,8 +23,11 @@ SpecBegin(ViewController_MASAdditions)
     [vc.view addSubview:view];
     
     [view mas_makeConstraints:^(MASConstraintMaker *make) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         make.top.equalTo(vc.mas_topLayoutGuide);
         make.bottom.equalTo(vc.mas_bottomLayoutGuide);
+#pragma clang diagnostic pop
     }];
     
     expect(vc.view.constraints).to.haveCountOf(6);

@@ -8,6 +8,8 @@
 
 #import <XCTest/XCTestObserver.h>
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 @interface GcovTestObserver : XCTestObserver
 @end
 
@@ -15,8 +17,11 @@
 
 - (void)stopObserving {
     [super stopObserving];
+#if TARGET_OS_IPHONE
     UIApplication* application = [UIApplication sharedApplication];
     [application.delegate applicationWillTerminate:application];
+#endif
 }
 
 @end
+#pragma clang diagnostic pop

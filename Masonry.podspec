@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.summary  = 'Harness the power of Auto Layout NSLayoutConstraints with a simplified, chainable and expressive syntax.'
   s.homepage = 'https://github.com/AmatsuZero/Masonry'
   s.author   = { 'AmatsuZero' => 'jzh16s@hotmail.com' }
-  s.social_media_url = "http://twitter.com/cloudkite"
+  s.social_media_url = "https://www.zhihu.com/people/jiang-zhen-hua-86"
 
   s.source   = { :git => 'https://github.com/AmatsuZero/Masonry.git', :tag => "v#{s.version}" }
 
@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
   EOS
 
   s.ios.deployment_target = '9.0' # minimum SDK with autolayout
-  s.osx.deployment_target = '10.7' # minimum SDK with autolayout
+  s.osx.deployment_target = '10.13' # minimum SDK with autolayout
   s.tvos.deployment_target = '9.0' # minimum SDK with autolayout
   s.requires_arc = true
   s.swift_versions = ['5.0', '5.5', '5.7', '5.9', '6.0']
@@ -52,8 +52,10 @@ Pod::Spec.new do |s|
   # ── Tests: 单元测试 ──
   s.test_spec 'Tests' do |ts|
     ts.requires_app_host = true
-    ts.test_type = :ui
-    ts.ios.deployment_target = '13.0'
+    ts.test_type = :unit
+    ts.ios.deployment_target = '9.0'
+    ts.osx.deployment_target = '10.13'
+    ts.tvos.deployment_target = '9.0'
     ts.source_files = 'Tests/*.{h,m}', 'Tests/Specs/*.{h,m}'
     ts.frameworks = 'XCTest'
   end
