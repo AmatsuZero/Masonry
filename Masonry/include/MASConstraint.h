@@ -7,6 +7,7 @@
 //
 
 #import "MASUtilities.h"
+#import "MASConstraintConvertible.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -94,7 +95,7 @@ MAS_SWIFT_UI_ACTOR
  *    MASViewAttribute, UIView, NSValue, NSArray
  *  see readme for more details.
  */
-- (MASConstraint * (^)(id attr))equalTo;
+- (MASConstraint * (^)(id<MASConstraintConvertible> attr))equalTo;
 
 /**
  *	Sets the constraint relation to NSLayoutRelationGreaterThanOrEqual
@@ -102,7 +103,7 @@ MAS_SWIFT_UI_ACTOR
  *    MASViewAttribute, UIView, NSValue, NSArray
  *  see readme for more details.
  */
-- (MASConstraint * (^)(id attr))greaterThanOrEqualTo;
+- (MASConstraint * (^)(id<MASConstraintConvertible> attr))greaterThanOrEqualTo;
 
 /**
  *	Sets the constraint relation to NSLayoutRelationLessThanOrEqual
@@ -110,7 +111,7 @@ MAS_SWIFT_UI_ACTOR
  *    MASViewAttribute, UIView, NSValue, NSArray
  *  see readme for more details.
  */
-- (MASConstraint * (^)(id attr))lessThanOrEqualTo;
+- (MASConstraint * (^)(id<MASConstraintConvertible> attr))lessThanOrEqualTo;
 
 /**
  *  Sets the constraint relation to NSLayoutRelationEqual with the corresponding
@@ -181,7 +182,7 @@ MAS_SWIFT_UI_ACTOR
 /**
  *	Sets the constraint debug name
  */
-- (MASConstraint * (^)(id key))key;
+- (MASConstraint * (^)(NSString *key))key;
 
 // NSLayoutConstraint constant Setters
 // for use outside of mas_updateConstraints/mas_makeConstraints blocks
@@ -284,14 +285,14 @@ MAS_SWIFT_UI_ACTOR
  *  Aliases to corresponding relation methods (for shorthand macros)
  *  Also needed to aid autocompletion
  */
-- (MASConstraint * (^)(id attr))mas_equalTo;
-- (MASConstraint * (^)(id attr))mas_greaterThanOrEqualTo;
-- (MASConstraint * (^)(id attr))mas_lessThanOrEqualTo;
+- (MASConstraint * (^)(id<MASConstraintConvertible> attr))mas_equalTo;
+- (MASConstraint * (^)(id<MASConstraintConvertible> attr))mas_greaterThanOrEqualTo;
+- (MASConstraint * (^)(id<MASConstraintConvertible> attr))mas_lessThanOrEqualTo;
 
 /**
  *  A dummy method to aid autocompletion
  */
-- (MASConstraint * (^)(id offset))mas_offset;
+- (MASConstraint * (^)(id<MASConstraintConvertible> offset))mas_offset;
 
 @end
 

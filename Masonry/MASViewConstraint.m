@@ -173,12 +173,14 @@ static char kInstalledConstraintsKey;
 
 #pragma mark - NSLayoutRelation proxy
 
-- (MASConstraint * (^)(id, NSLayoutRelation))equalToWithRelation {
-    return ^id(id attribute, NSLayoutRelation relation) {
+- (MASConstraint * (^)(id<MASConstraintConvertible>, NSLayoutRelation))equalToWithRelation {
+    return ^id(id<MASConstraintConvertible> attribute, NSLayoutRelation relation) {
         if ([attribute isKindOfClass:NSArray.class]) {
             NSAssert(!self.hasLayoutRelation, @"Redefinition of constraint relation");
             NSMutableArray *children = NSMutableArray.new;
-            for (id attr in attribute) {
+            for (id attr in (NSArray *)attribute) {
+                NSAssert([attr conformsToProtocol:@protocol(MASConstraintConvertible)],
+                         @"All elements in the constraint array must conform to MASConstraintConvertible, got: %@", attr);
                 MASViewConstraint *viewConstraint = [self copy];
                 viewConstraint.layoutRelation = relation;
                 viewConstraint.secondViewAttribute = attr;
@@ -252,8 +254,8 @@ static char kInstalledConstraintsKey;
 
 #pragma mark - debug helpers
 
-- (MASConstraint * (^)(id))key {
-    return ^id(id key) {
+- (MASConstraint * (^)(NSString *))key {
+    return ^id(NSString *key) {
         self.mas_key = key;
         return self;
     };

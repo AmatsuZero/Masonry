@@ -246,7 +246,7 @@ public final class MASSwiftConstraintProxy {
     @discardableResult
     public func key(_ value: Any?) -> MASSwiftConstraintProxy {
         guard let unwrapped = value else { return self }
-        constraint.key()(unwrapped)
+        constraint.key()("\(unwrapped)")
         return self
     }
 
@@ -480,7 +480,7 @@ public final class MASSwiftConstraintProxy {
     ///
     /// - Parameter value: 需要包装的值（支持可选类型）
     /// - Returns: 包装后的 ObjC 对象
-    internal static func boxValue(_ value: Any?) -> Any {
+    internal static func boxValue(_ value: Any?) -> any ConstraintConvertible {
         // 处理可选类型：解包 Optional 容器
         let unwrapped: Any
         if let value = value {
@@ -493,19 +493,18 @@ public final class MASSwiftConstraintProxy {
                 } else {
                     // 嵌套 Optional 且内部为 nil
                     assertionFailure("[Masonry] boxValue: 约束目标值不能为 nil，请检查传入的可选值是否已正确赋值")
-                    return NSNull()
+                    return NSNumber(value: 0)
                 }
             } else {
                 unwrapped = value
             }
         } else {
             assertionFailure("[Masonry] boxValue: 约束目标值不能为 nil，请检查传入的可选值是否已正确赋值")
-            return NSNull()
+            return NSNumber(value: 0)
         }
 
         switch unwrapped {
-        case let obj as NSObject:
-            return obj
+        // Swift value types → box to NSValue/NSNumber first
         case let point as CGPoint:
             #if canImport(UIKit)
             return NSValue(cgPoint: point)
@@ -536,8 +535,12 @@ public final class MASSwiftConstraintProxy {
             return NSNumber(value: intVal)
         case let floatVal as Float:
             return NSNumber(value: floatVal)
+        // ObjC objects (ViewAttribute, UIView/NSView, NSValue/NSNumber, NSArray)
+        case let convertible as any ConstraintConvertible:
+            return convertible
         default:
-            return unwrapped
+            assertionFailure("[Masonry] boxValue: 不支持的约束目标类型: \(type(of: unwrapped))")
+            return NSNumber(value: 0)
         }
     }
 

@@ -79,8 +79,8 @@
 
 #pragma mark - NSLayoutRelation proxy
 
-- (MASConstraint * (^)(id, NSLayoutRelation))equalToWithRelation {
-    return ^id(id attr, NSLayoutRelation relation) {
+- (MASConstraint * (^)(id<MASConstraintConvertible>, NSLayoutRelation))equalToWithRelation {
+    return ^id(id<MASConstraintConvertible> attr, NSLayoutRelation relation) {
         for (MASConstraint *constraint in self.childConstraints.copy) {
             constraint.equalToWithRelation(attr, relation);
         }
@@ -131,8 +131,8 @@
 
 #pragma mark - debug helpers
 
-- (MASConstraint * (^)(id))key {
-    return ^id(id key) {
+- (MASConstraint * (^)(NSString *))key {
+    return ^id(NSString *key) {
         self.mas_key = key;
         int i = 0;
         for (MASConstraint *constraint in self.childConstraints) {

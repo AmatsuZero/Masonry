@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
  *    MASViewAttribute, UIView, NSValue, NSArray
  *  see readme for more details.
  */
-- (MASConstraint * (^)(id, NSLayoutRelation))equalToWithRelation;
+- (MASConstraint * (^)(id<MASConstraintConvertible>, NSLayoutRelation))equalToWithRelation;
 
 /**
  *	Override to set a custom chaining behaviour

@@ -236,7 +236,7 @@ SpecBegin(MASViewConstraint) {
 - (void)testRelationComplainsWithUnsupportedArgument {
     MASViewConstraint *capturedConstraint = constraint;
     expect(^{
-        capturedConstraint.equalTo(@{});
+        capturedConstraint.equalTo((id)@{});
     }).to.raise(@"NSInternalInconsistencyException");
 }
 

@@ -24,38 +24,38 @@
 
 #pragma mark - NSLayoutRelation proxies
 
-- (MASConstraint * (^)(id))equalTo {
-    return ^id(id attribute) {
+- (MASConstraint * (^)(id<MASConstraintConvertible>))equalTo {
+    return ^id(id<MASConstraintConvertible> attribute) {
         return self.equalToWithRelation(attribute, NSLayoutRelationEqual);
     };
 }
 
-- (MASConstraint * (^)(id))mas_equalTo {
-    return ^id(id attribute) {
+- (MASConstraint * (^)(id<MASConstraintConvertible>))mas_equalTo {
+    return ^id(id<MASConstraintConvertible> attribute) {
         return self.equalToWithRelation(attribute, NSLayoutRelationEqual);
     };
 }
 
-- (MASConstraint * (^)(id))greaterThanOrEqualTo {
-    return ^id(id attribute) {
+- (MASConstraint * (^)(id<MASConstraintConvertible>))greaterThanOrEqualTo {
+    return ^id(id<MASConstraintConvertible> attribute) {
         return self.equalToWithRelation(attribute, NSLayoutRelationGreaterThanOrEqual);
     };
 }
 
-- (MASConstraint * (^)(id))mas_greaterThanOrEqualTo {
-    return ^id(id attribute) {
+- (MASConstraint * (^)(id<MASConstraintConvertible>))mas_greaterThanOrEqualTo {
+    return ^id(id<MASConstraintConvertible> attribute) {
         return self.equalToWithRelation(attribute, NSLayoutRelationGreaterThanOrEqual);
     };
 }
 
-- (MASConstraint * (^)(id))lessThanOrEqualTo {
-    return ^id(id attribute) {
+- (MASConstraint * (^)(id<MASConstraintConvertible>))lessThanOrEqualTo {
+    return ^id(id<MASConstraintConvertible> attribute) {
         return self.equalToWithRelation(attribute, NSLayoutRelationLessThanOrEqual);
     };
 }
 
-- (MASConstraint * (^)(id))mas_lessThanOrEqualTo {
-    return ^id(id attribute) {
+- (MASConstraint * (^)(id<MASConstraintConvertible>))mas_lessThanOrEqualTo {
+    return ^id(id<MASConstraintConvertible> attribute) {
         return self.equalToWithRelation(attribute, NSLayoutRelationLessThanOrEqual);
     };
 }
@@ -128,7 +128,7 @@
     };
 }
 
-- (MASConstraint * (^)(id offset))mas_offset {
+- (MASConstraint * (^)(id<MASConstraintConvertible> offset))mas_offset {
     // Will never be called due to macro
     return nil;
 }
@@ -266,9 +266,9 @@
 
 - (MASConstraint * (^)(MASLayoutPriority priority))priority { MASMethodNotImplemented(); }
 
-- (MASConstraint * (^)(id, NSLayoutRelation))equalToWithRelation { MASMethodNotImplemented(); }
+- (MASConstraint * (^)(id<MASConstraintConvertible>, NSLayoutRelation))equalToWithRelation { MASMethodNotImplemented(); }
 
-- (MASConstraint * (^)(id key))key { MASMethodNotImplemented(); }
+- (MASConstraint * (^)(NSString *key))key { MASMethodNotImplemented(); }
 
 - (MASConstraint *)equalToSuperview { MASMethodNotImplemented(); }
 
