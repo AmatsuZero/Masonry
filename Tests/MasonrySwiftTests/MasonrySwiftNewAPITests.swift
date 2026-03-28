@@ -1485,3 +1485,85 @@ final class MASEqualSizeTests: XCTestCase {
                       "单视图时 MASEqualSize 不应创建约束")
     }
 }
+
+// MARK: - 调用位置捕获测试（#fileID / #line）
+
+@MainActor
+final class ConstraintLocationTests: XCTestCase {
+
+    var superview: MASNativeView!
+    var view: MASNativeView!
+
+    override func setUp() {
+        super.setUp()
+        superview = MASNativeView()
+        view = MASNativeView()
+        superview.addSubview(view)
+    }
+
+    override func tearDown() {
+        view = nil
+        superview = nil
+        super.tearDown()
+    }
+
+    /// equalTo 自动捕获调用文件和行号，写入 mas_key
+    func testEqualToCapuresFileAndLine() {
+        var proxy: MASSwiftConstraintProxy!
+        let expectedLine: UInt = #line + 2
+        view.mas.makeConstraints { make in
+            proxy = make.top.equalTo(superview.mas_top)
+        }
+
+        let key = (proxy.layoutConstraints.first as? LayoutConstraint)?.mas_key as? String
+        XCTAssertNotNil(key, "equalTo 应将文件:行号写入 mas_key")
+        XCTAssertTrue(key?.contains("MasonrySwiftNewAPITests") == true,
+                      "mas_key 应包含调用处文件名，got: \(key ?? "nil")")
+        XCTAssertTrue(key?.contains("\(expectedLine)") == true,
+                      "mas_key 应包含调用处行号 \(expectedLine)，got: \(key ?? "nil")")
+    }
+
+    /// greaterThanOrEqualTo 自动捕获调用文件和行号，写入 mas_key
+    func testGreaterThanOrEqualToCapuresFileAndLine() {
+        var proxy: MASSwiftConstraintProxy!
+        let expectedLine: UInt = #line + 2
+        view.mas.makeConstraints { make in
+            proxy = make.width.greaterThanOrEqualTo(CGFloat(50))
+        }
+
+        let key = (proxy.layoutConstraints.first as? LayoutConstraint)?.mas_key as? String
+        XCTAssertNotNil(key, "greaterThanOrEqualTo 应将文件:行号写入 mas_key")
+        XCTAssertTrue(key?.contains("MasonrySwiftNewAPITests") == true,
+                      "mas_key 应包含调用处文件名，got: \(key ?? "nil")")
+        XCTAssertTrue(key?.contains("\(expectedLine)") == true,
+                      "mas_key 应包含调用处行号 \(expectedLine)，got: \(key ?? "nil")")
+    }
+
+    /// lessThanOrEqualTo 自动捕获调用文件和行号，写入 mas_key
+    func testLessThanOrEqualToCapuresFileAndLine() {
+        var proxy: MASSwiftConstraintProxy!
+        let expectedLine: UInt = #line + 2
+        view.mas.makeConstraints { make in
+            proxy = make.height.lessThanOrEqualTo(CGFloat(200))
+        }
+
+        let key = (proxy.layoutConstraints.first as? LayoutConstraint)?.mas_key as? String
+        XCTAssertNotNil(key, "lessThanOrEqualTo 应将文件:行号写入 mas_key")
+        XCTAssertTrue(key?.contains("MasonrySwiftNewAPITests") == true,
+                      "mas_key 应包含调用处文件名，got: \(key ?? "nil")")
+        XCTAssertTrue(key?.contains("\(expectedLine)") == true,
+                      "mas_key 应包含调用处行号 \(expectedLine)，got: \(key ?? "nil")")
+    }
+
+    /// 用户显式调用 labeled(_:) 后，key 被覆盖为用户提供的标签
+    func testExplicitLabeledOverridesAutoKey() {
+        var proxy: MASSwiftConstraintProxy!
+        view.mas.makeConstraints { make in
+            proxy = make.top.equalTo(superview.mas_top).labeled("myTopConstraint")
+        }
+
+        let key = (proxy.layoutConstraints.first as? LayoutConstraint)?.mas_key as? String
+        XCTAssertEqual(key, "myTopConstraint",
+                       "labeled(_:) 应覆盖自动生成的 file:line key")
+    }
+}

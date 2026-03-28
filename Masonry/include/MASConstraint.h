@@ -114,6 +114,27 @@ MAS_SWIFT_UI_ACTOR
 - (MASConstraint * (^)(id<MASConstraintConvertible> attr))lessThanOrEqualTo;
 
 /**
+ *  Sets the constraint relation to NSLayoutRelationEqual and records the call-site
+ *  file and line number into mas_key for improved debugging.
+ *  Used automatically by the mas_equalTo() macro.
+ */
+- (MASConstraint * (^)(id<MASConstraintConvertible> attr, NSString *file, NSUInteger line))equalToWithLocation;
+
+/**
+ *  Sets the constraint relation to NSLayoutRelationGreaterThanOrEqual and records the call-site
+ *  file and line number into mas_key for improved debugging.
+ *  Used automatically by the mas_greaterThanOrEqualTo() macro.
+ */
+- (MASConstraint * (^)(id<MASConstraintConvertible> attr, NSString *file, NSUInteger line))greaterThanOrEqualToWithLocation;
+
+/**
+ *  Sets the constraint relation to NSLayoutRelationLessThanOrEqual and records the call-site
+ *  file and line number into mas_key for improved debugging.
+ *  Used automatically by the mas_lessThanOrEqualTo() macro.
+ */
+- (MASConstraint * (^)(id<MASConstraintConvertible> attr, NSString *file, NSUInteger line))lessThanOrEqualToWithLocation;
+
+/**
  *  Sets the constraint relation to NSLayoutRelationEqual with the corresponding
  *  attribute of the receiver view's superview.
  *  Equivalent to equalTo(superview) or equalTo(superview.mas_<attribute>).
@@ -259,9 +280,9 @@ MAS_SWIFT_UI_ACTOR
  *  Defining MAS_SHORTHAND_GLOBALS will turn on auto-boxing for default syntax.
  *  A potential drawback of this is that the unprefixed macros will appear in global scope.
  */
-#define mas_equalTo(...)                 equalTo(MASBoxValue((__VA_ARGS__)))
-#define mas_greaterThanOrEqualTo(...)    greaterThanOrEqualTo(MASBoxValue((__VA_ARGS__)))
-#define mas_lessThanOrEqualTo(...)       lessThanOrEqualTo(MASBoxValue((__VA_ARGS__)))
+#define mas_equalTo(...)                 equalToWithLocation(MASBoxValue((__VA_ARGS__)), @(__FILE__), __LINE__)
+#define mas_greaterThanOrEqualTo(...)    greaterThanOrEqualToWithLocation(MASBoxValue((__VA_ARGS__)), @(__FILE__), __LINE__)
+#define mas_lessThanOrEqualTo(...)       lessThanOrEqualToWithLocation(MASBoxValue((__VA_ARGS__)), @(__FILE__), __LINE__)
 
 #define mas_offset(...)                  valueOffset(MASBoxValue((__VA_ARGS__)))
 
@@ -270,9 +291,9 @@ MAS_SWIFT_UI_ACTOR
 
 #ifdef MAS_SHORTHAND_GLOBALS
 
-#define equalTo(...)                     mas_equalTo(__VA_ARGS__)
-#define greaterThanOrEqualTo(...)        mas_greaterThanOrEqualTo(__VA_ARGS__)
-#define lessThanOrEqualTo(...)           mas_lessThanOrEqualTo(__VA_ARGS__)
+#define equalTo(...)                     equalToWithLocation(MASBoxValue((__VA_ARGS__)), @(__FILE__), __LINE__)
+#define greaterThanOrEqualTo(...)        greaterThanOrEqualToWithLocation(MASBoxValue((__VA_ARGS__)), @(__FILE__), __LINE__)
+#define lessThanOrEqualTo(...)           lessThanOrEqualToWithLocation(MASBoxValue((__VA_ARGS__)), @(__FILE__), __LINE__)
 
 #define offset(...)                      mas_offset(__VA_ARGS__)
 

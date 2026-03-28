@@ -54,6 +54,30 @@
     };
 }
 
+- (MASConstraint * (^)(id<MASConstraintConvertible>, NSString *, NSUInteger))equalToWithLocation {
+    return ^id(id<MASConstraintConvertible> attribute, NSString *file, NSUInteger line) {
+        MASConstraint *result = self.equalToWithRelation(attribute, NSLayoutRelationEqual);
+        result.key([NSString stringWithFormat:@"%@:%lu", file.lastPathComponent, (unsigned long)line]);
+        return result;
+    };
+}
+
+- (MASConstraint * (^)(id<MASConstraintConvertible>, NSString *, NSUInteger))greaterThanOrEqualToWithLocation {
+    return ^id(id<MASConstraintConvertible> attribute, NSString *file, NSUInteger line) {
+        MASConstraint *result = self.equalToWithRelation(attribute, NSLayoutRelationGreaterThanOrEqual);
+        result.key([NSString stringWithFormat:@"%@:%lu", file.lastPathComponent, (unsigned long)line]);
+        return result;
+    };
+}
+
+- (MASConstraint * (^)(id<MASConstraintConvertible>, NSString *, NSUInteger))lessThanOrEqualToWithLocation {
+    return ^id(id<MASConstraintConvertible> attribute, NSString *file, NSUInteger line) {
+        MASConstraint *result = self.equalToWithRelation(attribute, NSLayoutRelationLessThanOrEqual);
+        result.key([NSString stringWithFormat:@"%@:%lu", file.lastPathComponent, (unsigned long)line]);
+        return result;
+    };
+}
+
 - (MASConstraint * (^)(id<MASConstraintConvertible>))mas_lessThanOrEqualTo {
     return ^id(id<MASConstraintConvertible> attribute) {
         return self.equalToWithRelation(attribute, NSLayoutRelationLessThanOrEqual);

@@ -41,10 +41,14 @@ public final class MASSwiftConstraintProxy {
     /// 支持传入可选类型（如 `UIView!`），内部会自动解包。
     /// - Parameter value: 约束目标，可以是 `CGFloat`、`CGPoint`、`CGSize`、`MASNativeEdgeInsets`、
     ///   `MASNativeView`、`ViewAttribute` 或其他数值类型
+    /// - Parameter file: 调用处文件名（自动捕获，无需手动传入）
+    /// - Parameter line: 调用处行号（自动捕获，无需手动传入）
     /// - Returns: 当前代理对象，支持链式调用
     @discardableResult
-    public func equalTo(_ value: Any?) -> MASSwiftConstraintProxy {
-        constraint.equalTo()(MASSwiftConstraintProxy.boxValue(value))
+    public func equalTo(_ value: Any?,
+                        _ file: String = #fileID,
+                        _ line: UInt = #line) -> MASSwiftConstraintProxy {
+        constraint.equalToWithLocation()(MASSwiftConstraintProxy.boxValue(value, file: file, line: line), file, line)
         return self
     }
 
@@ -53,10 +57,14 @@ public final class MASSwiftConstraintProxy {
     /// 替代 ObjC 宏 `mas_greaterThanOrEqualTo(...)`。
     /// 支持传入可选类型（如 `UIView!`），内部会自动解包。
     /// - Parameter value: 约束目标
+    /// - Parameter file: 调用处文件名（自动捕获，无需手动传入）
+    /// - Parameter line: 调用处行号（自动捕获，无需手动传入）
     /// - Returns: 当前代理对象，支持链式调用
     @discardableResult
-    public func greaterThanOrEqualTo(_ value: Any?) -> MASSwiftConstraintProxy {
-        constraint.greaterThanOrEqualTo()(MASSwiftConstraintProxy.boxValue(value))
+    public func greaterThanOrEqualTo(_ value: Any?,
+                                     _ file: String = #fileID,
+                                     _ line: UInt = #line) -> MASSwiftConstraintProxy {
+        constraint.greaterThanOrEqualToWithLocation()(MASSwiftConstraintProxy.boxValue(value, file: file, line: line), file, line)
         return self
     }
 
@@ -65,10 +73,14 @@ public final class MASSwiftConstraintProxy {
     /// 替代 ObjC 宏 `mas_lessThanOrEqualTo(...)`。
     /// 支持传入可选类型（如 `UIView!`），内部会自动解包。
     /// - Parameter value: 约束目标
+    /// - Parameter file: 调用处文件名（自动捕获，无需手动传入）
+    /// - Parameter line: 调用处行号（自动捕获，无需手动传入）
     /// - Returns: 当前代理对象，支持链式调用
     @discardableResult
-    public func lessThanOrEqualTo(_ value: Any?) -> MASSwiftConstraintProxy {
-        constraint.lessThanOrEqualTo()(MASSwiftConstraintProxy.boxValue(value))
+    public func lessThanOrEqualTo(_ value: Any?,
+                                  _ file: String = #fileID,
+                                  _ line: UInt = #line) -> MASSwiftConstraintProxy {
+        constraint.lessThanOrEqualToWithLocation()(MASSwiftConstraintProxy.boxValue(value, file: file, line: line), file, line)
         return self
     }
 
@@ -480,7 +492,7 @@ public final class MASSwiftConstraintProxy {
     ///
     /// - Parameter value: 需要包装的值（支持可选类型）
     /// - Returns: 包装后的 ObjC 对象
-    internal static func boxValue(_ value: Any?) -> any ConstraintConvertible {
+    internal static func boxValue(_ value: Any?, file: String = #fileID, line: UInt = #line) -> any ConstraintConvertible {
         // 处理可选类型：解包 Optional 容器
         let unwrapped: Any
         if let value = value {
@@ -492,14 +504,14 @@ public final class MASSwiftConstraintProxy {
                     unwrapped = innerValue
                 } else {
                     // 嵌套 Optional 且内部为 nil
-                    assertionFailure("[Masonry] boxValue: 约束目标值不能为 nil，请检查传入的可选值是否已正确赋值")
+                    assertionFailure("[Masonry] [\(file):\(line)] boxValue: 约束目标值不能为 nil，请检查传入的可选值是否已正确赋值")
                     return NSNumber(value: 0)
                 }
             } else {
                 unwrapped = value
             }
         } else {
-            assertionFailure("[Masonry] boxValue: 约束目标值不能为 nil，请检查传入的可选值是否已正确赋值")
+            assertionFailure("[Masonry] [\(file):\(line)] boxValue: 约束目标值不能为 nil，请检查传入的可选值是否已正确赋值")
             return NSNumber(value: 0)
         }
 
@@ -539,7 +551,7 @@ public final class MASSwiftConstraintProxy {
         case let convertible as any ConstraintConvertible:
             return convertible
         default:
-            assertionFailure("[Masonry] boxValue: 不支持的约束目标类型: \(type(of: unwrapped))")
+            assertionFailure("[Masonry] [\(file):\(line)] boxValue: 不支持的约束目标类型: \(type(of: unwrapped))")
             return NSNumber(value: 0)
         }
     }

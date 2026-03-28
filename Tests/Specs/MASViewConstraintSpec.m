@@ -25,6 +25,7 @@
 @property (nonatomic, assign) CGFloat layoutMultiplier;
 @property (nonatomic, assign) CGFloat layoutConstant;
 @property (nonatomic, assign) BOOL hasLayoutRelation;
+@property (nonatomic, strong) id mas_key;
 
 @end
 
@@ -582,6 +583,45 @@ SpecBegin(MASViewConstraint) {
     expect(^{
         [orphanConstraint equalToSuperview];
     }).to.raise(@"NSInternalInconsistencyException");
+}
+
+- (void)testEqualToWithLocationSetsKeyToFileAndLine {
+    NSUInteger capturedLine = __LINE__ + 1;
+    MASConstraint *result = constraint.equalToWithLocation(otherView.mas_top, @"SomeFile.m", capturedLine);
+
+    expect(result).to.beIdenticalTo(constraint);
+    NSString *expectedKey = [NSString stringWithFormat:@"SomeFile.m:%lu", (unsigned long)capturedLine];
+    expect([(MASViewConstraint *)result mas_key]).to.equal(expectedKey);
+    expect(constraint.layoutRelation).to.equal(NSLayoutRelationEqual);
+}
+
+- (void)testGreaterThanOrEqualToWithLocationSetsKeyAndRelation {
+    NSUInteger capturedLine = __LINE__ + 1;
+    MASConstraint *result = constraint.greaterThanOrEqualToWithLocation(otherView.mas_top, @"SomeFile.m", capturedLine);
+
+    expect(result).to.beIdenticalTo(constraint);
+    NSString *expectedKey = [NSString stringWithFormat:@"SomeFile.m:%lu", (unsigned long)capturedLine];
+    expect([(MASViewConstraint *)result mas_key]).to.equal(expectedKey);
+    expect(constraint.layoutRelation).to.equal(NSLayoutRelationGreaterThanOrEqual);
+}
+
+- (void)testLessThanOrEqualToWithLocationSetsKeyAndRelation {
+    NSUInteger capturedLine = __LINE__ + 1;
+    MASConstraint *result = constraint.lessThanOrEqualToWithLocation(otherView.mas_top, @"SomeFile.m", capturedLine);
+
+    expect(result).to.beIdenticalTo(constraint);
+    NSString *expectedKey = [NSString stringWithFormat:@"SomeFile.m:%lu", (unsigned long)capturedLine];
+    expect([(MASViewConstraint *)result mas_key]).to.equal(expectedKey);
+    expect(constraint.layoutRelation).to.equal(NSLayoutRelationLessThanOrEqual);
+}
+
+- (void)testMasEqualToMacroSetsKeyWithCurrentFile {
+    // mas_equalTo 宏展开后调用 equalToWithLocation，key 格式为 "文件名:行号"
+    MASViewConstraint *result = (MASViewConstraint *)constraint.mas_equalTo(@100);
+
+    expect(result.mas_key).notTo.beNil();
+    // key 应包含当前文件名（不含路径前缀）
+    expect([(NSString *)result.mas_key containsString:@"MASViewConstraintSpec.m"]).to.beTruthy();
 }
 
 SpecEnd
