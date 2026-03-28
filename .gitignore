@@ -28,17 +28,8 @@ Podfile.lock
 .codebuddy/
 .claude/
 .idea/
+.vscode/
 
 # Xcode 自动生成的项目文件（SPM 通过 Xcode 打开 Package.swift 自动生成）
 *.xcodeproj
 *.xcworkspace
-
-# 脚本环境
-script/env.sh
-DerivedData/
-.build/
-/Masonry.xcworkspace/xcshareddata/Masonry.xccheckout
-.codebuddy/
-.claude/
-.idea/
-.vscode/

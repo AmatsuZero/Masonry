@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'Masonry'
-  s.version  = '1.3.1'
+  s.version  = '1.3.2'
   s.license  = 'MIT'
   s.summary  = 'Harness the power of Auto Layout NSLayoutConstraints with a simplified, chainable and expressive syntax.'
   s.homepage = 'https://github.com/AmatsuZero/Masonry'
@@ -15,15 +15,6 @@ Pod::Spec.new do |s|
 	NSLayoutConstraints which results in layout code which is more concise and readable.
     Masonry supports iOS and Mac OSX.
   }
-
-  pch_AF = <<-EOS
-    #ifndef TARGET_OS_IOS
-        #define TARGET_OS_IOS TARGET_OS_IPHONE
-    #endif
-    #ifndef TARGET_OS_TV
-        #define TARGET_OS_TV 0
-    #endif
-  EOS
 
   s.ios.deployment_target = '9.0' # minimum SDK with autolayout
   s.osx.deployment_target = '10.13' # minimum SDK with autolayout

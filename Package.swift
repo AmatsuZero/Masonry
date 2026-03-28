@@ -25,9 +25,6 @@ let targets: [Target] = [
     .target(
         name: "Masonry",
         path: "Masonry",
-        exclude: [
-            "Info.plist"
-        ],
         publicHeadersPath: "include",
         cSettings: [
             .headerSearchPath("."),
@@ -48,9 +45,6 @@ let targets: [Target] = [
         dependencies: ["Masonry"],
         path: "Tests",
         exclude: [
-                "MasonryTests-Info.plist",
-                "MasonryTestsLoader",
-                "GcovTestObserver.m",
                 "MasonrySwiftTests",
             ],
         cSettings: [

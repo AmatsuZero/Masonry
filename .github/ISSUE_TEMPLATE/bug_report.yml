@@ -1,0 +1,109 @@
+name: 🐛 Bug 报告
+description: 报告一个 Bug 以帮助我们改进
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你花时间提交 Bug 报告！请尽可能详细地填写以下信息，以便我们快速定位和修复问题。
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: 平台
+      description: 你在哪个平台上遇到了这个问题？
+      options:
+        - iOS
+        - macOS
+        - tvOS
+      multiple: true
+    validations:
+      required: true
+
+  - type: input
+    id: platform-version
+    attributes:
+      label: 平台版本
+      description: 例如 iOS 17.0、macOS 14.0
+      placeholder: "e.g. iOS 17.0"
+    validations:
+      required: true
+
+  - type: input
+    id: masonry-version
+    attributes:
+      label: Masonry 版本
+      description: 你使用的 Masonry 版本号
+      placeholder: "e.g. 1.3.2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: integration
+    attributes:
+      label: 集成方式
+      description: 你是通过哪种方式集成 Masonry 的？
+      options:
+        - Swift Package Manager
+        - CocoaPods
+        - 手动集成
+    validations:
+      required: true
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: 使用语言
+      description: 你使用的编程语言
+      options:
+        - Objective-C
+        - Swift
+        - 混合使用
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 清晰简洁地描述你遇到的问题
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 复现步骤
+      description: 请提供详细的复现步骤
+      value: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+      description: 描述你期望发生的行为
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+      description: 描述实际发生的行为
+
+  - type: textarea
+    id: code-sample
+    attributes:
+      label: 代码示例
+      description: 如果可能，请提供最小可复现的代码示例
+      render: swift
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 补充信息
+      description: 其他你认为有助于解决问题的信息（截图、日志等）
