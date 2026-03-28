@@ -70,6 +70,7 @@ let package = Package(
                 .product(name: "Masonry", package: "Masonry"),
                 .product(name: "MasonrySwift", package: "Masonry"),
                 "MasonryObjCExamples",
+                "MasonrySwiftExample",
             ],
             path: "AppModule"
         ),
