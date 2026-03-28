@@ -54,8 +54,7 @@ public final class BasicExampleView: MASNativeView {
             make.left.equalTo(self.mas.left).offset(padding)
             make.bottom.equalTo(blueView.mas.top).offset(-padding)
             make.right.equalTo(redView.mas.left).offset(-padding)
-            make.width.equalTo(redView)   // 与 redView 等宽
-            make.height.equalTo(redView)  // 与 redView 等高
+            make.size.equalTo(redView)    // 与 redView 等宽等高
             make.height.equalTo(blueView) // 与 blueView 等高
         }
 
@@ -984,8 +983,7 @@ public final class SnapKitAlignedExampleView: UIView {
         // ── make.group { } ── 批量设置一组约束的共同属性
         greenBox.mas.makeConstraints { make in
             let hGroup = make.group {
-                make.left.equalToSuperview().offset(16)
-                make.right.equalToSuperview().offset(-16)
+                make.left.right.equalToSuperview().inset(16)
             }
             hGroup.priority(.high)  // 组内所有约束统一设为 .high
 

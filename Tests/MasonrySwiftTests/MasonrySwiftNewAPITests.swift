@@ -926,8 +926,7 @@ final class ConstraintGroupTests: XCTestCase {
     func testGroupPriorityAppliesToAllChildren() {
         view.mas.makeConstraints { make in
             let group = make.group {
-                make.left.equalToSuperview()
-                make.right.equalToSuperview()
+                make.left.right.equalToSuperview()
             }
             group.priority(.low)
             make.top.bottom.equalToSuperview()
@@ -1137,5 +1136,352 @@ final class InterViewConstraintTests: XCTestCase {
         let lc = proxy.firstLayoutConstraint
         XCTAssertNotNil(lc)
         XCTAssertEqual(lc?.multiplier, 0.5)
+    }
+}
+
+// MARK: - ConstraintLifecycleTests 补充（对齐 SnapKit testUpdateConstraints / testRemakeConstraints / testPrepareConstraints）
+
+extension ConstraintLifecycleTests {
+
+    /// 验证 updateConstraints 不会增加新约束（仅更新已有约束的 constant）
+    /// 对齐 SnapKit testUpdateConstraints：确认更新后约束数量不变
+    func testUpdateConstraintsDoesNotAddNew() {
+        view.mas.makeConstraints { make in
+            make.top.left.equalToSuperview().offset(10)
+        }
+        let countBefore = superview.constraints.filter { $0.firstItem === view }.count
+        XCTAssertGreaterThan(countBefore, 0)
+
+        // updateConstraints 只更新已有约束的 constant，不应创建新约束
+        view.mas.updateConstraints { make in
+            make.top.equalToSuperview().offset(20)
+        }
+
+        let countAfter = superview.constraints.filter { $0.firstItem === view }.count
+        XCTAssertEqual(countAfter, countBefore,
+                       "updateConstraints 不应新增约束，只更新已有约束的 constant")
+    }
+
+    /// 验证 updateConstraints 确实修改了 constant
+    func testUpdateConstraintsModifiesConstant() {
+        var proxy: MASSwiftConstraintProxy!
+        view.mas.makeConstraints { make in
+            proxy = make.top.equalToSuperview().offset(10)
+        }
+        XCTAssertEqual(proxy.firstLayoutConstraint?.constant, 10)
+
+        view.mas.updateConstraints { make in
+            make.top.equalToSuperview().offset(40)
+        }
+        XCTAssertEqual(proxy.firstLayoutConstraint?.constant, 40,
+                       "updateConstraints 应将 top 约束的 constant 更新为 40")
+    }
+
+    /// 验证 makeConstraints 返回值展开后的底层约束数量与实际安装数量一致
+    func testMakeConstraintsReturnCountMatchesInstalled() {
+        let returned = view.mas.makeConstraints { make in
+            make.edges.equalToSuperview()  // 4 个底层约束
+        }
+        // makeConstraints 返回顶层 MASConstraint（edges = 1 个 Composite）
+        // 用 layoutConstraints 展开获取底层 NSLayoutConstraint 数量
+        let nsConstraints = returned.flatMap { MASSwiftConstraintProxy($0).layoutConstraints }
+        XCTAssertEqual(nsConstraints.count, 4,
+                       "edges 展开后应有 4 个底层 NSLayoutConstraint")
+    }
+
+    /// 验证 remakeConstraints 停用旧约束
+    /// 对齐 SnapKit testRemakeConstraints：旧约束被移除，新约束生效
+    func testRemakeConstraintsDeactivatesOldConstraints() {
+        let oldConstraints = view.mas.makeConstraints { make in
+            make.size.equalTo(100)
+        }
+
+        view.mas.remakeConstraints { make in
+            make.size.equalTo(50)
+        }
+
+        for c in oldConstraints {
+            XCTAssertFalse(MASSwiftConstraintProxy(c).isActive,
+                           "remakeConstraints 后旧约束应被停用")
+        }
+    }
+
+    /// 验证 prepareConstraints 完整生命周期：初始未安装 → activate → deactivate
+    /// 对齐 SnapKit testPrepareConstraints
+    func testPrepareConstraintsFulfillActivateDeactivateCycle() {
+        let constraints = view.mas.prepareConstraints { make in
+            make.width.equalTo(100)
+            make.height.equalTo(80)
+        }
+        XCTAssertEqual(constraints.count, 2)
+
+        // prepareConstraints 初始状态：未安装，layoutConstraints 为空
+        // （注意：Masonry 内部跟踪的 isActive 与底层 NSLayoutConstraint.isActive 不同步）
+        for c in constraints {
+            XCTAssertTrue(MASSwiftConstraintProxy(c).layoutConstraints.isEmpty,
+                          "prepareConstraints 后底层 NSLayoutConstraint 应尚未创建")
+        }
+
+        // 手动激活：安装底层约束
+        constraints.forEach { $0.activate() }
+        for c in constraints {
+            XCTAssertFalse(MASSwiftConstraintProxy(c).layoutConstraints.isEmpty,
+                           "activate() 后应创建底层 NSLayoutConstraint")
+            XCTAssertTrue(MASSwiftConstraintProxy(c).isActive,
+                          "activate() 后约束应为激活状态")
+        }
+
+        // 手动停用
+        constraints.forEach { $0.deactivate() }
+        for c in constraints {
+            XCTAssertFalse(MASSwiftConstraintProxy(c).isActive,
+                           "deactivate() 后约束应为非激活状态")
+        }
+    }
+}
+
+// MARK: - ConstraintPriorityTests 补充（.required 优先级）
+
+extension ConstraintPriorityTests {
+
+    /// 验证 .required 优先级（1000）
+    func testPriorityRequired() {
+        var proxy: MASSwiftConstraintProxy!
+        view.mas.makeConstraints { make in
+            proxy = make.width.equalTo(100).priority(.required)
+        }
+        #if canImport(UIKit)
+        XCTAssertEqual(proxy.firstLayoutConstraint?.priority, UILayoutPriority(1000),
+                       ".required 优先级应为 1000")
+        #endif
+    }
+}
+
+// MARK: - CompositeConstraintTests 补充（链式属性创建约束数量）
+
+extension CompositeConstraintTests {
+
+    /// 验证链式属性 make.top.left 创建 2 个底层约束
+    /// 对齐 SnapKit testHorizontalVerticalEdges 思路
+    func testChainedTopLeftCreates2Constraints() {
+        let returned = view.mas.makeConstraints { make in
+            make.top.left.equalToSuperview()
+        }
+        // makeConstraints 返回顶层 MASConstraint（链式属性生成 1 个 Composite）
+        // 用 layoutConstraints 获取展开后的底层 NSLayoutConstraint 数量
+        let nsConstraints = returned.flatMap { MASSwiftConstraintProxy($0).layoutConstraints }
+        XCTAssertEqual(nsConstraints.count, 2, "make.top.left 应展开为 2 个底层约束")
+
+        let attributes = Set(nsConstraints.map { $0.firstAttribute })
+        XCTAssertTrue(attributes.contains(.top))
+        XCTAssertTrue(attributes.contains(.left))
+    }
+
+    /// 验证链式属性 make.top.left.right.bottom 展开为 4 个底层约束
+    func testChainedTopLeftRightBottomCreates4Constraints() {
+        let returned = view.mas.makeConstraints { make in
+            make.top.left.right.bottom.equalToSuperview()
+        }
+        let nsConstraints = returned.flatMap { MASSwiftConstraintProxy($0).layoutConstraints }
+        XCTAssertEqual(nsConstraints.count, 4,
+                       "make.top.left.right.bottom 链式调用应展开为 4 个底层约束")
+    }
+
+    /// 验证 make.left.right（水平方向）+ make.top.bottom（垂直方向）共 4 个底层约束
+    /// 对应 SnapKit testHorizontalVerticalEdges
+    func testHorizontalPlusVerticalEdgesCreates4Constraints() {
+        let returned = view.mas.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.bottom.equalToSuperview()
+        }
+        let nsConstraints = returned.flatMap { MASSwiftConstraintProxy($0).layoutConstraints }
+        XCTAssertEqual(nsConstraints.count, 4,
+                       "水平 + 垂直边约束应共展开为 4 个底层约束")
+    }
+}
+
+// MARK: - ConstraintOffsetTests 补充（updateInsets EdgeInsets / sizeOffset / centerOffset）
+
+extension ConstraintOffsetTests {
+
+    /// 验证 updateInsets(EdgeInsets) 逐边更新 constant
+    func testUpdateInsetsWithEdgeInsets() {
+        var proxy: MASSwiftConstraintProxy!
+        view.mas.makeConstraints { make in
+            proxy = make.edges.equalToSuperview().inset(10)
+        }
+
+        let newInsets = MASNativeEdgeInsets(top: 5, left: 10, bottom: 15, right: 20)
+        proxy.updateInsets(newInsets)
+
+        for lc in proxy.layoutConstraints {
+            switch lc.firstAttribute {
+            case .top:
+                XCTAssertEqual(lc.constant, 5, "top inset 更新后应为 5")
+            case .left, .leading:
+                XCTAssertEqual(lc.constant, 10, "left inset 更新后应为 10")
+            case .bottom:
+                XCTAssertEqual(lc.constant, -15, "bottom inset 更新后应为 -15")
+            case .right, .trailing:
+                XCTAssertEqual(lc.constant, -20, "right inset 更新后应为 -20")
+            default:
+                break
+            }
+        }
+    }
+
+    /// 验证 sizeOffset 设置宽高偏移量
+    func testSizeOffsetMethod() {
+        var proxy: MASSwiftConstraintProxy!
+        view.mas.makeConstraints { make in
+            proxy = make.size.equalTo(superview!).sizeOffset(CGSize(width: -20, height: -30))
+        }
+        let constraints = proxy.layoutConstraints
+        XCTAssertEqual(constraints.count, 2, "size 应创建 2 个约束")
+
+        for lc in constraints {
+            if lc.firstAttribute == .width {
+                XCTAssertEqual(lc.constant, -20, "width 的 sizeOffset 应为 -20")
+            } else if lc.firstAttribute == .height {
+                XCTAssertEqual(lc.constant, -30, "height 的 sizeOffset 应为 -30")
+            }
+        }
+    }
+
+    /// 验证 centerOffset 设置中心偏移量
+    func testCenterOffsetMethod() {
+        var proxy: MASSwiftConstraintProxy!
+        view.mas.makeConstraints { make in
+            proxy = make.center.equalTo(superview!).centerOffset(CGPoint(x: 10, y: -5))
+        }
+        let constraints = proxy.layoutConstraints
+        XCTAssertEqual(constraints.count, 2, "center 应创建 2 个约束")
+
+        for lc in constraints {
+            if lc.firstAttribute == .centerX {
+                XCTAssertEqual(lc.constant, 10, "centerX 的 centerOffset 应为 10")
+            } else if lc.firstAttribute == .centerY {
+                XCTAssertEqual(lc.constant, -5, "centerY 的 centerOffset 应为 -5")
+            }
+        }
+    }
+}
+
+// MARK: - ViewDSL 额外测试（mas.key / closestCommonSuperview）
+
+@MainActor
+final class ViewDSLExtraTests: XCTestCase {
+
+    var superview: MASNativeView!
+    var view: MASNativeView!
+
+    @MainActor
+    override func setUp() {
+        super.setUp()
+        superview = MASNativeView(frame: CGRect(x: 0, y: 0, width: 400, height: 400))
+        view = MASNativeView()
+        superview.addSubview(view)
+    }
+
+    @MainActor
+    override func tearDown() {
+        view.removeFromSuperview()
+        view = nil
+        superview = nil
+        super.tearDown()
+    }
+
+    /// 验证 view.mas.key 的 getter/setter 与 mas_key 同步
+    func testMasKeyGetterSetter() {
+        view.mas.key = "testView"
+        XCTAssertEqual(view.mas_key as? String, "testView",
+                       "view.mas.key setter 应写入 mas_key")
+        XCTAssertEqual(view.mas.key as? String, "testView",
+                       "view.mas.key getter 应读取 mas_key")
+    }
+
+    /// 验证 mas.closestCommonSuperview 返回最近公共父视图
+    func testClosestCommonSuperviewReturnsSuperviewWhenBothChildren() {
+        let viewB = MASNativeView()
+        superview.addSubview(viewB)
+        defer { viewB.removeFromSuperview() }
+
+        let common = view.mas.closestCommonSuperview(viewB)
+        XCTAssertTrue(common === superview,
+                      "同一父视图的两个子视图的最近公共父视图应为 superview")
+    }
+
+    /// 验证 mas.closestCommonSuperview 在无公共父视图时返回 nil
+    func testClosestCommonSuperviewReturnsNilWhenNoCommon() {
+        let isolated = MASNativeView()
+        let result = view.mas.closestCommonSuperview(isolated)
+        XCTAssertNil(result, "没有公共父视图时应返回 nil")
+    }
+}
+
+// MARK: - MASEqualSize 工具函数测试
+
+@MainActor
+final class MASEqualSizeTests: XCTestCase {
+
+    var superview: MASNativeView!
+
+    @MainActor
+    override func setUp() {
+        super.setUp()
+        superview = MASNativeView(frame: CGRect(x: 0, y: 0, width: 400, height: 400))
+    }
+
+    @MainActor
+    override func tearDown() {
+        superview = nil
+        super.tearDown()
+    }
+
+    /// 验证 MASEqualSize 为后续视图创建等宽/等高约束
+    func testMASEqualSizeCreatesConstraints() {
+        let v1 = MASNativeView()
+        let v2 = MASNativeView()
+        let v3 = MASNativeView()
+        superview.addSubview(v1)
+        superview.addSubview(v2)
+        superview.addSubview(v3)
+
+        v1.mas.makeConstraints { make in
+            make.size.equalTo(100)
+        }
+
+        MASEqualSize([v1, v2, v3])
+
+        // 等尺寸约束安装在公共父视图（superview）上，而不是视图自身
+        let v2Constraints = superview.constraints.filter { lc in
+            (lc.firstItem === v2 || lc.secondItem === v2) &&
+            (lc.firstAttribute == .width || lc.firstAttribute == .height)
+        }
+        XCTAssertEqual(v2Constraints.count, 2,
+                       "MASEqualSize 应为 v2 在 superview 上创建 2 个约束（width + height）")
+
+        let v3Constraints = superview.constraints.filter { lc in
+            (lc.firstItem === v3 || lc.secondItem === v3) &&
+            (lc.firstAttribute == .width || lc.firstAttribute == .height)
+        }
+        XCTAssertEqual(v3Constraints.count, 2,
+                       "MASEqualSize 应为 v3 在 superview 上创建 2 个约束（width + height）")
+    }
+
+    /// 验证 MASEqualSize 传入空数组不崩溃，返回空数组
+    func testMASEqualSizeEmptyArrayReturnsEmpty() {
+        let result = MASEqualSize([])
+        XCTAssertTrue(result.isEmpty, "空数组应直接返回空数组")
+    }
+
+    /// 验证 MASEqualSize 传入单个视图时不创建约束（无参照视图）
+    func testMASEqualSizeSingleViewCreatesNoConstraints() {
+        let v = MASNativeView()
+        superview.addSubview(v)
+        MASEqualSize([v])
+        // 单视图无需创建等尺寸约束
+        XCTAssertTrue(v.constraints.isEmpty,
+                      "单视图时 MASEqualSize 不应创建约束")
     }
 }
