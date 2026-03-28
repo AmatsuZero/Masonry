@@ -10,6 +10,16 @@
 
 @implementation MASViewAttribute
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+- (instancetype)init {
+    // -init 不应被直接调用，此处仅为满足 designated initializer 规则
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"Use -initWithView:item:layoutAttribute: instead"
+                                 userInfo:nil];
+}
+#pragma clang diagnostic pop
+
 - (id)initWithView:(MAS_VIEW *)view layoutAttribute:(NSLayoutAttribute)layoutAttribute {
     self = [self initWithView:view item:view layoutAttribute:layoutAttribute];
     return self;

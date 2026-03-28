@@ -33,6 +33,8 @@ NS_SWIFT_NAME(ViewAttribute)
  */
 @property (nonatomic, assign, readonly) NSLayoutAttribute layoutAttribute;
 
+- (instancetype)init NS_UNAVAILABLE;
+
 /**
  *  Convenience initializer.
  */
