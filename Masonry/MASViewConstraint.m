@@ -254,9 +254,9 @@ static char kInstalledConstraintsKey;
 
 #pragma mark - debug helpers
 
-- (MASConstraint * (^)(NSString *))key {
-    return ^id(NSString *key) {
-        self.mas_key = key;
+- (MASConstraint * (^)(id))key {
+    return ^id(id key) {
+        self.mas_key = [key description];
         return self;
     };
 }

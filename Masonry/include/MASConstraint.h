@@ -203,7 +203,7 @@ MAS_SWIFT_UI_ACTOR
 /**
  *	Sets the constraint debug name
  */
-- (MASConstraint * (^)(NSString *key))key;
+- (MASConstraint * (^)(id key))key;
 
 // NSLayoutConstraint constant Setters
 // for use outside of mas_updateConstraints/mas_makeConstraints blocks

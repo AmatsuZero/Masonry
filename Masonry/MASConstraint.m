@@ -292,7 +292,7 @@
 
 - (MASConstraint * (^)(id<MASConstraintConvertible>, NSLayoutRelation))equalToWithRelation { MASMethodNotImplemented(); }
 
-- (MASConstraint * (^)(NSString *key))key { MASMethodNotImplemented(); }
+- (MASConstraint * (^)(id key))key { MASMethodNotImplemented(); }
 
 - (MASConstraint *)equalToSuperview { MASMethodNotImplemented(); }
 

@@ -624,4 +624,36 @@ SpecBegin(MASViewConstraint) {
     expect([(NSString *)result.mas_key containsString:@"MASViewConstraintSpec.m"]).to.beTruthy();
 }
 
+#pragma mark - key 方法接受 id 参数
+
+- (void)testKeyWithNSNumber {
+    // 验证 NSNumber 作为 key 参数时，mas_key 被正确设置为其 description 字符串表示
+    constraint.key(@(340954));
+    expect(constraint.mas_key).to.equal(@"340954");
+}
+
+- (void)testKeyWithNSString {
+    // 验证 NSString 作为 key 参数时行为不变（description 返回自身）
+    constraint.key(@"someStringKey");
+    expect(constraint.mas_key).to.equal(@"someStringKey");
+}
+
+- (void)testKeyWithNil {
+    // 验证 nil 作为 key 参数时系统安全处理不崩溃
+    constraint.key(nil);
+    expect(constraint.mas_key).to.beNil();
+}
+
+- (void)testKeyOverwriteWithDifferentTypes {
+    // 验证多次调用 .key(...) 设置不同类型的 key 时，以最后一次设置的值为准
+    constraint.key(@"firstKey");
+    expect(constraint.mas_key).to.equal(@"firstKey");
+
+    constraint.key(@(12345));
+    expect(constraint.mas_key).to.equal(@"12345");
+
+    constraint.key(@"finalKey");
+    expect(constraint.mas_key).to.equal(@"finalKey");
+}
+
 SpecEnd

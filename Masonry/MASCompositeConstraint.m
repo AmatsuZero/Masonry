@@ -131,12 +131,12 @@
 
 #pragma mark - debug helpers
 
-- (MASConstraint * (^)(NSString *))key {
-    return ^id(NSString *key) {
-        self.mas_key = key;
+- (MASConstraint * (^)(id))key {
+    return ^id(id key) {
+        self.mas_key = [key description];
         int i = 0;
         for (MASConstraint *constraint in self.childConstraints) {
-            constraint.key([NSString stringWithFormat:@"%@[%d]", key, i++]);
+            constraint.key([NSString stringWithFormat:@"%@[%d]", [key description], i++]);
         }
         return self;
     };
