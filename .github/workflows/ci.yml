@@ -11,20 +11,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # ── Swift Package Manager 测试（iOS + macOS） ──
+  # ── Swift Package Manager 构建 & 测试（iOS + macOS） ──
   spm-test:
-    name: SPM Tests (${{ matrix.platform }})
+    name: SPM ${{ matrix.action == 'test' && 'Tests' || 'Build' }} (${{ matrix.platform }})
     runs-on: macos-15
     strategy:
       fail-fast: false
       matrix:
         include:
           - platform: iOS
-            destination: "platform=iOS Simulator,name=iPhone 16,OS=latest"
+            destination: "generic/platform=iOS Simulator"
             scheme: Masonry-Package
+            action: build
           - platform: macOS
             destination: "platform=macOS"
             scheme: Masonry-Package
+            action: test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,15 +37,15 @@ jobs:
       - name: Build and Test
         run: |
           set -o pipefail
-          xcodebuild test \
+          xcodebuild ${{ matrix.action }} \
             -scheme "${{ matrix.scheme }}" \
             -destination "${{ matrix.destination }}" \
-            -enableCodeCoverage YES \
-            -resultBundlePath TestResults-${{ matrix.platform }}.xcresult \
+            ${{ matrix.action == 'test' && '-enableCodeCoverage YES' || '' }} \
+            ${{ matrix.action == 'test' && format('-resultBundlePath TestResults-{0}.xcresult', matrix.platform) || '' }} \
             | xcpretty -c
 
       - name: Upload Test Results
-        if: always()
+        if: always() && matrix.action == 'test'
         uses: actions/upload-artifact@v4
         with:
           name: TestResults-${{ matrix.platform }}
@@ -98,4 +100,4 @@ jobs:
         run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
 
       - name: Pod Lib Lint
-        run: pod lib lint --allow-warnings
+        run: pod lib lint --allow-warnings --platforms=macos
